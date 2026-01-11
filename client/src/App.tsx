@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { Switch, Route, useLocation } from 'wouter';
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
-import Header from './components/header';
+import { Header } from './components/header';
 import Hero from './components/Hero';
 import TrackingResults from './components/TrackingResults';
 import AIPredictions from './components/AIPredictions';
 import FeaturesSection from './components/Features';
 import Carriers from './components/Carriers';
-import Footer from './components/footer';
+import { Footer } from './components/footer';
 import EmailModal from './components/EmailModal';
 import SmsModal from './components/SmsModal';
 import AIChat from './components/AIChat';
@@ -69,7 +69,7 @@ function HomePage() {
 
       setTrackingData(data);
       setCarrier(data.carrier || inputCarrier);
-      
+
       const successfulTrack = !data.notFound && data.events && data.events.length > 0;
       if (successfulTrack && !isPremiumSubscriber()) {
         usePremiumCredit(inputTrackingNumber);
@@ -91,7 +91,7 @@ function HomePage() {
   return (
     <>
       {!showResults && <Hero onTrack={handleTrack} />}
-      
+
       {showResults && (
         <>
           {trackingError ? (
@@ -130,39 +130,39 @@ function HomePage() {
                 trackingData={trackingData}
                 isLoading={isLoading}
               />
-              {trackingData && !trackingData.notFound && trackingData.events?.length > 0 && 
-               freeTracksLeft > 0 && !isPremiumSubscriber() && (
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-4">
-                  <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-center" data-testid="banner-free-tracks">
-                    <p className="text-green-800 font-medium">
-                      You got full AI insights for free! 
-                      <span className="ml-2 font-bold">{freeTracksLeft} free premium track{freeTracksLeft !== 1 ? 's' : ''} remaining.</span>
-                    </p>
+              {trackingData && !trackingData.notFound && trackingData.events?.length > 0 &&
+                freeTracksLeft > 0 && !isPremiumSubscriber() && (
+                  <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-center" data-testid="banner-free-tracks">
+                      <p className="text-green-800 font-medium">
+                        You got full AI insights for free!
+                        <span className="ml-2 font-bold">{freeTracksLeft} free premium track{freeTracksLeft !== 1 ? 's' : ''} remaining.</span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </>
           )}
         </>
       )}
-      
+
       <FeaturesSection />
       <Carriers />
-      
+
       <EmailModal
         isOpen={emailModalOpen}
         onClose={() => setEmailModalOpen(false)}
         trackingNumber={trackingNumber}
         carrier={carrier}
       />
-      
+
       <SmsModal
         isOpen={smsModalOpen}
         onClose={() => setSmsModalOpen(false)}
         trackingNumber={trackingNumber}
         carrier={carrier}
       />
-      
+
       <AIChat />
     </>
   );
@@ -175,7 +175,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
-      
+
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/privacy" component={PrivacyPolicy} />
@@ -193,7 +193,7 @@ function App() {
           </div>
         </Route>
       </Switch>
-      
+
       <Footer />
       <Toaster />
     </div>
