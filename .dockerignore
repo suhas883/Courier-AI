@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.gitignore
+.DS_Store
+*.md
+.env
+.env.*
+.replit
+.config
+.local
+attached_assets
+*.log
+*.tar.gz
+Dockerfile*
+docker-compose*
+.dockerignore
