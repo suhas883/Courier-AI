@@ -23,8 +23,12 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production
+# Install all dependencies (need devDeps like drizzle-kit/tsx for migrations)
+RUN npm ci
+
+# Copy migration config and schema
+COPY drizzle.config.ts ./
+COPY shared ./shared
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
@@ -36,5 +40,5 @@ EXPOSE 5000
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Start the application
-CMD ["node", "dist/index.cjs"]
+# Start the application - Run DB push first
+CMD ["sh", "-c", "npm run db:push && node dist/index.cjs"]
