@@ -21,6 +21,18 @@ export function serveStatic(app: Express) {
 
   app.use(express.static(distPath));
 
+  // Serve generated guides from client/public/guides BEFORE SPA fallback
+  const guidesPath = path.resolve(__dirname, "..", "client", "public", "guides");
+  console.log(`[Static] Guides directory: ${guidesPath}`);
+  if (fs.existsSync(guidesPath)) {
+    app.use("/guides", express.static(guidesPath, { extensions: ['html'] }));
+    console.log(`[Static] Serving /guides/* from ${guidesPath}`);
+  } else {
+    console.log(`[Static] Guides directory not found, creating...`);
+    fs.mkdirSync(guidesPath, { recursive: true });
+    app.use("/guides", express.static(guidesPath, { extensions: ['html'] }));
+  }
+
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
     const indexPath = path.resolve(distPath, "index.html");
