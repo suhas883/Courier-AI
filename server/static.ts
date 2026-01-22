@@ -21,8 +21,8 @@ export function serveStatic(app: Express) {
 
   app.use(express.static(distPath));
 
-  // Serve generated guides from client/public/guides BEFORE SPA fallback
-  const guidesPath = path.resolve(__dirname, "..", "client", "public", "guides");
+  // Serve generated guides from locally written public/guides (matching routes.ts)
+  const guidesPath = path.resolve(__dirname, "public", "guides");
   console.log(`[Static] Guides directory: ${guidesPath}`);
   if (fs.existsSync(guidesPath)) {
     app.use("/guides", express.static(guidesPath, { extensions: ['html'] }));
