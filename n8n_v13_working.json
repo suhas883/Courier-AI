@@ -1,0 +1,317 @@
+{
+    "name": "LiveTrackings MASTER (V13 - FIXED)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Click to Seed DB",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "manual_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT 'en',\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT 'pending'\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, subdirectory, target_country, status) VALUES\n('Compensair', 'https://www.compensair.com/?tp_source=605475', 'flight compensation', 'travel', 'Global', 'pending'),\n('Airalo', 'https://airalo.tp.st/ABCdef12', 'esim travel data', 'travel', 'Global', 'pending'),\n('Aviasales', 'https://aviasales.tp.st/GHIjkl34', 'cheap flights', 'travel', 'Global', 'pending'),\n('Ekta', 'https://ekta.tp.st/MNOpqr56', 'travel insurance', 'insurance', 'Global', 'pending'),\n('Viator', 'https://viator.tp.st/STUvwx78', 'tours and activities', 'travel', 'Global', 'pending');",
+                "options": {}
+            },
+            "name": "Restore Database",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                0
+            ],
+            "id": "restore_db",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hoursInterval": 1
+                        }
+                    ]
+                }
+            },
+            "name": "Hourly Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                0,
+                300
+            ],
+            "id": "schedule_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' LIMIT 1;",
+                "options": {}
+            },
+            "name": "Fetch Pending Offers",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                300
+            ],
+            "id": "fetch_offers",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://65.108.50.43:4000/v1/chat/completions",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer triprt-master-key34"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"qwen\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a travel journalist. Write a 500-word guide about {{ $json.primary_keyword }} for travelers. Include practical tips.\\n\\nInclude this affiliate link once: {{ $json.affiliate_link }}\\n\\nFormat with HTML tags like <h2>, <p>, <ul>, <li>.\"\n    }\n  ],\n  \"max_tokens\": 2000,\n  \"temperature\": 0.7\n}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "name": "Qwen AI Writer",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                500,
+                300
+            ],
+            "id": "qwen_ai",
+            "onError": "continueRegularOutput",
+            "retryOnFail": true,
+            "maxTries": 3,
+            "waitBetweenTries": 5000
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "quality_check",
+                            "leftValue": "={{ $json.choices ? $json.choices[0].message.content.length : 0 }}",
+                            "rightValue": 100,
+                            "operator": {
+                                "type": "number",
+                                "operation": "gt"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "name": "Quality Check",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                750,
+                300
+            ],
+            "id": "quality_gate"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/save-page",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Publish-Secret",
+                            "value": "livetrackings-pseo-2024"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"filename\": \"{{ $node['Fetch Pending Offers'].json.partner_name.toLowerCase().replace(/ /g, '-') }}-en\",\n  \"language\": \"en\",\n  \"subdirectory\": \"{{ $node['Fetch Pending Offers'].json.subdirectory }}\",\n  \"html\": {{ JSON.stringify($json.choices[0].message.content) }}\n}",
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "name": "Publish to Replit",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1000,
+                200
+            ],
+            "id": "publish_replit",
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "UPDATE offers SET status = 'published' WHERE id = '{{ $node['Fetch Pending Offers'].json.id }}';",
+                "options": {}
+            },
+            "name": "Mark as Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                1250,
+                200
+            ],
+            "id": "mark_published",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "amount": 10,
+                "unit": "seconds"
+            },
+            "name": "Rate Limit Delay",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1000,
+                400
+            ],
+            "id": "rate_limit",
+            "webhookId": "delay-webhook-v13"
+        }
+    ],
+    "connections": {
+        "Click to Seed DB": {
+            "main": [
+                [
+                    {
+                        "node": "Restore Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Hourly Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Pending Offers": {
+            "main": [
+                [
+                    {
+                        "node": "Qwen AI Writer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Qwen AI Writer": {
+            "main": [
+                [
+                    {
+                        "node": "Quality Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Quality Check": {
+            "main": [
+                [
+                    {
+                        "node": "Publish to Replit",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Publish to Replit": {
+            "main": [
+                [
+                    {
+                        "node": "Mark as Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark as Published": {
+            "main": [
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Rate Limit Delay": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    }
+}

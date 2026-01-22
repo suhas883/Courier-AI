@@ -401,13 +401,16 @@ export async function registerRoutes(
 
   // pSEO "Receiver": Save generated HTML pages with Enterprise SEO
   // Also available as /api/publish for compatibility
+  // Accepts both 'content' and 'html' fields for n8n compatibility
   app.post(["/api/save-page", "/api/publish"], async (req, res) => {
     try {
-      const { filename, content, language, subdirectory, api_secret } = req.body;
+      const { filename, content, html, language, subdirectory, api_secret } = req.body;
+      // Accept either 'content' or 'html' field (n8n uses 'html')
+      const pageContent = content || html;
       const headerSecret = req.headers['x-publish-secret'] as string;
       const providedSecret = api_secret || headerSecret;
 
-      console.log(`[Publish API] Received request:`, { filename, language, subdirectory, hasSecret: !!providedSecret });
+      console.log(`[Publish API] Received request:`, { filename, language, subdirectory, hasSecret: !!providedSecret, hasContent: !!pageContent });
 
       // STRICT Authentication checking
       const PUBLISH_SECRET = process.env.PUBLISH_SECRET || "livetrackings-pseo-2024";
@@ -417,8 +420,8 @@ export async function registerRoutes(
         return res.status(401).json({ error: "Unauthorized access - Invalid or missing secret" });
       }
 
-      if (!filename || !content || !language) {
-        console.error(`[Publish API] Missing fields`);
+      if (!filename || !pageContent || !language) {
+        console.error(`[Publish API] Missing fields: filename=${!!filename}, content=${!!pageContent}, language=${!!language}`);
         return res.status(400).json({ error: "Missing required fields" });
       }
 
@@ -596,7 +599,7 @@ export async function registerRoutes(
         </div>
 
         <!-- Main Content -->
-        ${content}
+        ${pageContent}
         
         <!-- Author Bio -->
         <div class="author-bio">
