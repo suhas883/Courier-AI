@@ -431,8 +431,13 @@ export async function registerRoutes(
       const safeSubdirectory = (subdirectory || "travel").replace(/[^a-z0-9-]/g, "");
 
       // Enterprise URL Structure: /guides/<language>/<subdirectory>/<filename>/index.html
-      const publicDir = path.join(__dirname, "..", "client", "public");
-      const targetDir = path.join(publicDir, "guides", safeLanguage, safeSubdirectory, safeFilename);
+      // FIXED: Write to the directory being served by static.ts (dist/public or server/public)
+      const distPath = path.resolve(__dirname, "public");
+      const targetDir = path.join(distPath, "guides", safeLanguage, safeSubdirectory, safeFilename);
+
+      // Also verify if we need to write to client/public for dev persistence
+      const sourcePublicDir = path.join(__dirname, "..", "..", "client", "public"); // Adjust based on dist structure
+
 
       if (!fs.existsSync(targetDir)) {
         console.log(`[Publish API] Creating directory: ${targetDir}`);
