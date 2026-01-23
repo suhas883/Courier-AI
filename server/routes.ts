@@ -651,11 +651,11 @@ export async function registerRoutes(
       const filePath = path.join(targetDir, `${safeFilename}.html`);
       fs.writeFileSync(filePath, fullHtml, "utf-8");
 
-      console.log(`[pSEO] Saved: /en/${safeSubdirectory}/${safeFilename}.html`);
+      console.log(`[pSEO] Saved: /${safeLanguage}/${safeSubdirectory}/${safeFilename}.html`);
 
       return res.json({
         success: true,
-        url: `/en/${safeSubdirectory}/${safeFilename}.html`
+        url: `/${safeLanguage}/${safeSubdirectory}/${safeFilename}.html`
       });
       // DEMO: Serve a static sitemap or dynamic one from DB - REMOVED from here
     } catch (error) {
