@@ -630,6 +630,18 @@ export async function registerRoutes(
 
       console.log(`[pSEO] Saved: /guides/${safeLanguage}/${safeSubdirectory}/${safeFilename}/`);
 
+      // DUAL WRITE: Also write to client/public if it exists (for Dev/Vite mode on Replit)
+      const clientPublicDir = path.join(process.cwd(), "client", "public");
+      if (fs.existsSync(clientPublicDir)) {
+        const clientTargetDir = path.join(clientPublicDir, "guides", safeLanguage, safeSubdirectory, safeFilename);
+        if (!fs.existsSync(clientTargetDir)) {
+          fs.mkdirSync(clientTargetDir, { recursive: true });
+        }
+        const clientFilePath = path.join(clientTargetDir, "index.html");
+        fs.writeFileSync(clientFilePath, fullHtml, "utf-8");
+        console.log(`[pSEO] Also saved to dev/source path: ${clientFilePath}`);
+      }
+
       return res.json({
         success: true,
         url: `/guides/${safeLanguage}/${safeSubdirectory}/${safeFilename}/`
