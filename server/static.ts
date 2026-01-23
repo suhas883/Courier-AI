@@ -64,16 +64,18 @@ export function serveStatic(app: Express) {
   }
 
   // Serve /en/* from client/public/en for language-specific pages
-  const enPath = path.join(clientPublicPath, "en");
-  if (fs.existsSync(enPath)) {
-    app.use("/en", express.static(enPath, { extensions: ['html'] }));
-    console.log(`[Static] Serving /en/* from ${enPath}`);
+  // PRIORITIZE CWD because we know files are there (client/public/en)
+  const cwdEnPath = path.resolve(process.cwd(), "client", "public", "en");
+
+  if (fs.existsSync(cwdEnPath)) {
+    console.log(`[Static] Serving /en/* from ${cwdEnPath} (CWD Priority)`);
+    app.use("/en", express.static(cwdEnPath, { extensions: ['html'] }));
   } else {
-    // Also try from CWD
-    const cwdEnPath = path.resolve(process.cwd(), "client", "public", "en");
-    if (fs.existsSync(cwdEnPath)) {
-      app.use("/en", express.static(cwdEnPath, { extensions: ['html'] }));
-      console.log(`[Static] Serving /en/* from ${cwdEnPath} (CWD)`);
+    // Fallback to relative path logic
+    const enPath = path.join(clientPublicPath, "en");
+    if (fs.existsSync(enPath)) {
+      app.use("/en", express.static(enPath, { extensions: ['html'] }));
+      console.log(`[Static] Serving /en/* from ${enPath}`);
     }
   }
 

@@ -404,6 +404,31 @@ export async function registerRoutes(
   // Accepts both 'content' and 'html' fields for n8n compatibility
   app.post(["/api/save-page", "/api/publish"], async (req, res) => {
     try {
+      // DEBUG: File-based logging to catch n8n requests
+      try {
+        const logPath = path.join(process.cwd(), 'publish.log');
+        const logData = {
+          timestamp: new Date().toISOString(),
+          method: req.method,
+          url: req.originalUrl,
+          headers: {
+            'content-type': req.headers['content-type'],
+            'x-publish-secret': req.headers['x-publish-secret'] ? '***MASKED***' : 'MISSING'
+          },
+          body: {
+            filename: req.body.filename,
+            language: req.body.language,
+            subdirectory: req.body.subdirectory,
+            hasContent: !!(req.body.content || req.body.html),
+            contentSnippet: (req.body.content || req.body.html || '').substring(0, 200) + '...'
+          }
+        };
+        fs.appendFileSync(logPath, JSON.stringify(logData, null, 2) + '\n---\n');
+        console.log(`[Publish Debug] Logged request to ${logPath}`);
+      } catch (e) {
+        console.error(`[Publish Debug] Failed to log request:`, e);
+      }
+
       const { filename, content, html, language, subdirectory, api_secret } = req.body;
       // Accept either 'content' or 'html' field (n8n uses 'html')
       const pageContent = content || html;
@@ -444,15 +469,13 @@ export async function registerRoutes(
         fs.mkdirSync(targetDir, { recursive: true });
       }
 
-      console.log(`[Publish API] Target Directory: ${targetDir}`);
-
       // Build canonical URL
-      const canonicalUrl = `https://livetrackings.com/guides/${safeLanguage}/${safeSubdirectory}/${safeFilename}/`;
+      const canonicalUrl = `https://livetrackings.com/en/${safeSubdirectory}/${safeFilename}.html`;
 
       // Build hreflang tags for all 5 languages
       const languages = ['en', 'de', 'fr', 'es', 'hi'];
       const hreflangTags = languages.map(lang =>
-        `<link rel="alternate" hreflang="${lang}" href="https://livetrackings.com/guides/${lang}/${safeSubdirectory}/${safeFilename}/" />`
+        `<link rel="alternate" hreflang="${lang}" href="https://livetrackings.com/${lang}/${safeSubdirectory}/${safeFilename}.html" />`
       ).join('\n    ');
 
       // Wrap content with full HTML structure including SEO tags
@@ -474,7 +497,7 @@ export async function registerRoutes(
     <meta property="og:image" content="https://livetrackings.com/og-image.jpg">
     <link rel="canonical" href="${canonicalUrl}" />
     ${hreflangTags}
-    <link rel="alternate" hreflang="x-default" href="https://livetrackings.com/guides/en/${safeSubdirectory}/${safeFilename}/" />
+    <link rel="alternate" hreflang="x-default" href="https://livetrackings.com/en/${safeSubdirectory}/${safeFilename}.html" />
     
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
@@ -625,26 +648,14 @@ export async function registerRoutes(
 </body>
 </html>`;
 
-      const filePath = path.join(targetDir, "index.html");
+      const filePath = path.join(targetDir, `${safeFilename}.html`);
       fs.writeFileSync(filePath, fullHtml, "utf-8");
 
-      console.log(`[pSEO] Saved: /guides/${safeLanguage}/${safeSubdirectory}/${safeFilename}/`);
-
-      // DUAL WRITE: Also write to client/public if it exists (for Dev/Vite mode on Replit)
-      const clientPublicDir = path.join(process.cwd(), "client", "public");
-      if (fs.existsSync(clientPublicDir)) {
-        const clientTargetDir = path.join(clientPublicDir, "guides", safeLanguage, safeSubdirectory, safeFilename);
-        if (!fs.existsSync(clientTargetDir)) {
-          fs.mkdirSync(clientTargetDir, { recursive: true });
-        }
-        const clientFilePath = path.join(clientTargetDir, "index.html");
-        fs.writeFileSync(clientFilePath, fullHtml, "utf-8");
-        console.log(`[pSEO] Also saved to dev/source path: ${clientFilePath}`);
-      }
+      console.log(`[pSEO] Saved: /en/${safeSubdirectory}/${safeFilename}.html`);
 
       return res.json({
         success: true,
-        url: `/guides/${safeLanguage}/${safeSubdirectory}/${safeFilename}/`
+        url: `/en/${safeSubdirectory}/${safeFilename}.html`
       });
       // DEMO: Serve a static sitemap or dynamic one from DB - REMOVED from here
     } catch (error) {
