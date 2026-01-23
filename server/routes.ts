@@ -455,19 +455,17 @@ export async function registerRoutes(
       const safeLanguage = language.replace(/[^a-z-]/g, "");
       const safeSubdirectory = (subdirectory || "travel").replace(/[^a-z0-9-]/g, "");
 
-      // Enterprise URL Structure: /guides/<language>/<subdirectory>/<filename>/index.html
-      // FIXED: Write to the directory being served by static.ts (dist/public or server/public)
-      const distPath = path.resolve(__dirname, "public");
-      const targetDir = path.join(distPath, "guides", safeLanguage, safeSubdirectory, safeFilename);
-
-      // Also verify if we need to write to client/public for dev persistence
-      const sourcePublicDir = path.join(__dirname, "..", "..", "client", "public"); // Adjust based on dist structure
-
+      // Enterprise URL Structure: /<language>/<subdirectory>/<filename>.html
+      // STRICT FIX: Write to client/public/<language>/<subdirectory>/<filename>.html
+      const clientPublicDir = path.join(process.cwd(), "client", "public");
+      const targetDir = path.join(clientPublicDir, safeLanguage, safeSubdirectory);
 
       if (!fs.existsSync(targetDir)) {
         console.log(`[Publish API] Creating directory: ${targetDir}`);
         fs.mkdirSync(targetDir, { recursive: true });
       }
+
+      console.log(`[Publish API] Target Directory: ${targetDir}`);
 
       // Build canonical URL
       const canonicalUrl = `https://livetrackings.com/en/${safeSubdirectory}/${safeFilename}.html`;
