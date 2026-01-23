@@ -1,5 +1,5 @@
 {
-    "name": "LiveTrackings MASTER (V13 - FIXED)",
+    "name": "LiveTrackings MASTER (V14 - GEMINI FORCE)",
     "nodes": [
         {
             "parameters": {},
@@ -101,13 +101,13 @@
         {
             "parameters": {
                 "method": "POST",
-                "url": "http://157.180.81.63/v1/chat/completions",
+                "url": "https://openrouter.ai/api/v1/chat/completions",
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [
                         {
                             "name": "Authorization",
-                            "value": "Bearer triprt-master-key34"
+                            "value": "Bearer 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"
                         },
                         {
                             "name": "Content-Type",
@@ -117,55 +117,23 @@
                 },
                 "sendBody": true,
                 "specifyBody": "json",
-                "jsonBody": "={\n  \"model\": \"qwen\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a travel journalist. Write a 500-word guide about {{ $json.primary_keyword }} for travelers. Include practical tips.\\n\\nInclude this affiliate link once: {{ $json.affiliate_link }}\\n\\nFormat with HTML tags like <h2>, <p>, <ul>, <li>.\"\n    }\n  ],\n  \"max_tokens\": 2000,\n  \"temperature\": 0.7\n}",
+                "jsonBody": "={\n  \"model\": \"google/gemini-2.0-flash-001\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a travel journalist. Write a 500-word guide about {{ $json.primary_keyword }} for travelers. Include practical tips.\\n\\nInclude this affiliate link once: {{ $json.affiliate_link }}\\n\\nFormat with HTML tags like <h2>, <p>, <ul>, <li>.\"\n    }\n  ],\n  \"max_tokens\": 2000,\n  \"temperature\": 0.7\n}",
                 "options": {
                     "timeout": 120000
                 }
             },
-            "name": "Qwen AI Writer",
+            "name": "Gemini AI Writer",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.2,
             "position": [
                 500,
                 300
             ],
-            "id": "qwen_ai",
+            "id": "gemini_ai",
             "onError": "continueRegularOutput",
             "retryOnFail": true,
             "maxTries": 3,
             "waitBetweenTries": 5000
-        },
-        {
-            "parameters": {
-                "conditions": {
-                    "options": {
-                        "caseSensitive": true,
-                        "leftValue": "",
-                        "typeValidation": "strict"
-                    },
-                    "conditions": [
-                        {
-                            "id": "quality_check",
-                            "leftValue": "={{ $json.choices ? $json.choices[0].message.content.length : 0 }}",
-                            "rightValue": 100,
-                            "operator": {
-                                "type": "number",
-                                "operation": "gt"
-                            }
-                        }
-                    ],
-                    "combinator": "and"
-                },
-                "options": {}
-            },
-            "name": "Quality Check",
-            "type": "n8n-nodes-base.if",
-            "typeVersion": 2,
-            "position": [
-                750,
-                300
-            ],
-            "id": "quality_gate"
         },
         {
             "parameters": {
@@ -195,8 +163,8 @@
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.2,
             "position": [
-                1000,
-                200
+                750,
+                300
             ],
             "id": "publish_replit",
             "onError": "continueRegularOutput"
@@ -211,8 +179,8 @@
             "type": "n8n-nodes-base.postgres",
             "typeVersion": 2.5,
             "position": [
-                1250,
-                200
+                1000,
+                300
             ],
             "id": "mark_published",
             "credentials": {
@@ -221,21 +189,6 @@
                     "name": "Neon Database"
                 }
             }
-        },
-        {
-            "parameters": {
-                "amount": 10,
-                "unit": "seconds"
-            },
-            "name": "Rate Limit Delay",
-            "type": "n8n-nodes-base.wait",
-            "typeVersion": 1.1,
-            "position": [
-                1000,
-                400
-            ],
-            "id": "rate_limit",
-            "webhookId": "delay-webhook-v13"
         }
     ],
     "connections": {
@@ -276,36 +229,18 @@
             "main": [
                 [
                     {
-                        "node": "Qwen AI Writer",
+                        "node": "Gemini AI Writer",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Qwen AI Writer": {
-            "main": [
-                [
-                    {
-                        "node": "Quality Check",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Quality Check": {
+        "Gemini AI Writer": {
             "main": [
                 [
                     {
                         "node": "Publish to Replit",
-                        "type": "main",
-                        "index": 0
-                    }
-                ],
-                [
-                    {
-                        "node": "Rate Limit Delay",
                         "type": "main",
                         "index": 0
                     }
@@ -317,28 +252,6 @@
                 [
                     {
                         "node": "Mark as Published",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Mark as Published": {
-            "main": [
-                [
-                    {
-                        "node": "Rate Limit Delay",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
-            ]
-        },
-        "Rate Limit Delay": {
-            "main": [
-                [
-                    {
-                        "node": "Fetch Pending Offers",
                         "type": "main",
                         "index": 0
                     }

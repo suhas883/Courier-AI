@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Tools & Logistics | LiveTrackings</title>
+    <style>
+        :root {
+            --primary: #0284c7;
+            --bg-dark: #0f172a;
+            --text-light: #e2e8f0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            border-bottom: 1px solid #1e293b;
+            padding: 1.5rem 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .hero {
+            padding: 8rem 0;
+            text-align: center;
+            background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-top: 1.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 2rem;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-box {
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container nav-content">
+            <a href="/" class="logo">LiveTrackings</a>
+            <a href="/en/solutions/travel-tools.html" class="btn" style="padding: 0.5rem 1rem; margin-top: 0;">Check
+                Offer</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Smarter Travel Logistics</h1>
+            <p class="subtitle">Essential tools for the modern courier and traveler. Flights, accommodation, and route
+                optimization all in one place.</p>
+            <a href="#" class="btn">Start Journey</a>
+        </section>
+
+        <section class="features">
+            <div class="feature-box">
+                <h3>✈️ Flight Tracking</h3>
+                <p>Real-time updates on air freight and passenger flights.</p>
+            </div>
+            <div class="feature-box">
+                <h3>🏨 Hotel Logistics</h3>
+                <p>Find partner hubs and accommodation near delivery centers.</p>
+            </div>
+            <div class="feature-box">
+                <h3>🗺️ Route Planner</h3>
+                <p>Optimize multi-stop delivery routes efficiently.</p>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

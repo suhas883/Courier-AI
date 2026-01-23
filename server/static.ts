@@ -24,13 +24,57 @@ export function serveStatic(app: Express) {
   // Serve generated guides from locally written public/guides (matching routes.ts)
   const guidesPath = path.resolve(__dirname, "public", "guides");
   console.log(`[Static] Guides directory: ${guidesPath}`);
+
+  // CHECK CLIENT PUBLIC DIR (Dev/Persistance fallback)
+  const clientPublicPath = path.resolve(__dirname, "../../client/public");
+  const clientGuidesPath = path.join(clientPublicPath, "guides");
+
   if (fs.existsSync(guidesPath)) {
     app.use("/guides", express.static(guidesPath, { extensions: ['html'] }));
     console.log(`[Static] Serving /guides/* from ${guidesPath}`);
+  } else if (fs.existsSync(clientGuidesPath)) {
+    // Fallback to client/public/guides
+    app.use("/guides", express.static(clientGuidesPath, { extensions: ['html'] }));
+    console.log(`[Static] Serving /guides/* from ${clientGuidesPath}`);
   } else {
-    console.log(`[Static] Guides directory not found, creating...`);
+    // Attempt to serve valid language roots from client/public if guides logic fails
+    // This handles the case where files might be in client/public/en directly (legacy)
+    if (fs.existsSync(clientPublicPath)) {
+      console.log(`[Static] Serving root static files from ${clientPublicPath}`);
+      app.use(express.static(clientPublicPath, { extensions: ['html'] }));
+    }
+
+    console.log(`[Static] Guides directory not found in dist or client, creating empty...`);
     fs.mkdirSync(guidesPath, { recursive: true });
     app.use("/guides", express.static(guidesPath, { extensions: ['html'] }));
+  }
+
+  // LEGACY: Serve /travel/* from client/public for backwards compatibility
+  const travelPath = path.join(clientPublicPath, "travel");
+  if (fs.existsSync(travelPath)) {
+    app.use("/travel", express.static(travelPath, { extensions: ['html'] }));
+    console.log(`[Static] Serving /travel/* from ${travelPath} (legacy)`);
+  } else if (fs.existsSync(clientPublicPath)) {
+    // Also try serving /travel from client/public directly
+    const clientTravelPath = path.resolve(process.cwd(), "client", "public", "travel");
+    if (fs.existsSync(clientTravelPath)) {
+      app.use("/travel", express.static(clientTravelPath, { extensions: ['html'] }));
+      console.log(`[Static] Serving /travel/* from ${clientTravelPath} (legacy CWD)`);
+    }
+  }
+
+  // Serve /en/* from client/public/en for language-specific pages
+  const enPath = path.join(clientPublicPath, "en");
+  if (fs.existsSync(enPath)) {
+    app.use("/en", express.static(enPath, { extensions: ['html'] }));
+    console.log(`[Static] Serving /en/* from ${enPath}`);
+  } else {
+    // Also try from CWD
+    const cwdEnPath = path.resolve(process.cwd(), "client", "public", "en");
+    if (fs.existsSync(cwdEnPath)) {
+      app.use("/en", express.static(cwdEnPath, { extensions: ['html'] }));
+      console.log(`[Static] Serving /en/* from ${cwdEnPath} (CWD)`);
+    }
   }
 
   // fall through to index.html if the file doesn't exist

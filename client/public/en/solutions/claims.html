@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Claims & Refunds | LiveTrackings</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--white);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .hero {
+            background: linear-gradient(to right, #eff6ff, #ffffff);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-content">
+            <a href="/" class="logo">LiveTrackings</a>
+            <a href="/en/solutions/claims.html" class="btn" style="padding: 0.5rem 1rem;">Check Offer</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Expert Claims Assistance</h1>
+            <p class="subtitle">Lost or damaged package? Get professional help filing claims and securing your refund faster.</p>
+            <a href="#" class="btn">Start Your Claim</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="feature-grid">
+            <div class="card">
+                <div class="icon">📝</div>
+                <h3>Easy Filing</h3>
+                <p>We simplify the complex paperwork required by major carriers, ensuring your claim is filed correctly the first time.</p>
+            </div>
+            <div class="card">
+                <div class="icon">⚡</div>
+                <h3>Faster Processing</h3>
+                <p>Our experts know exactly what evidence is needed to expedite your claim review process.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🛡️</div>
+                <h3>Maximized Refunds</h3>
+                <p>Don't settle for less. We help you recover the full value of your lost or damaged items.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
