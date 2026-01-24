@@ -49,6 +49,15 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Health check endpoint
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      status: "ok",
+      timestamp: new Date().toISOString(),
+      service: "LiveTrackings API"
+    });
+  });
+
   // Track a package
   app.post("/api/track", async (req, res) => {
     try {
