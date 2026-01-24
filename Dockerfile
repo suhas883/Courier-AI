@@ -32,6 +32,8 @@ COPY shared ./shared
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
+# CRITICAL: Copy public assets for static serving
+COPY --from=builder /app/client/public ./client/public
 
 # Expose port
 EXPOSE 5000

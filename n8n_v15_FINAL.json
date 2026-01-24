@@ -1,0 +1,352 @@
+{
+    "name": "LiveTrackings MASTER (V15 - FINAL FIXED)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Click to Seed DB",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "manual_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT 'en',\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT 'pending'\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, target_country, subdirectory, status, language_code) VALUES\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'flight delay compensation claim', 'Germany', 'claims', 'pending', 'en'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'international esim data plan', 'Global', 'connectivity', 'pending', 'en'),\n('Yesim', 'https://tp.media/r?marker=605475&trs=488170&p=5998&u=https%3A%2F%2Fyesim.tech&campaign_id=224', 'global sim card for travelers', 'Europe', 'connectivity', 'pending', 'en'),\n('DrimSim', 'https://tp.media/r?marker=605475&trs=488170&p=2762&u=https%3A%2F%2Fw1.drimsim.com&campaign_id=102', 'roaming sim international travel', 'USA', 'connectivity', 'pending', 'en'),\n('EKTA Insurance', 'https://tp.media/r?marker=605475&trs=488170&p=5869&u=https%3A%2F%2Fektatraveling.com&campaign_id=225', 'travel cargo insurance protection', 'India', 'insurance', 'pending', 'en'),\n('KiwiTaxi', 'https://tp.media/r?marker=605475&trs=488170&p=647&u=https%3A%2F%2Fkiwitaxi.com&campaign_id=1', 'airport taxi transfer booking', 'France', 'transfers', 'pending', 'en'),\n('GetTransfer', 'https://tp.media/r?marker=605475&trs=488170&p=4439&u=https%3A%2F%2Fgettransfer.com&campaign_id=147', 'private transfer airport hotel', 'Spain', 'transfers', 'pending', 'en'),\n('Intui Travel', 'https://tp.media/r?marker=605475&trs=488170&p=657&u=https%3A%2F%2Fintui.travel&campaign_id=22', 'shuttle bus airport city center', 'Italy', 'transfers', 'pending', 'en'),\n('Welcome Pickups', 'https://tp.media/r?marker=605475&trs=488170&p=8919&u=https%3A%2F%2Fwelcomepickups.com&campaign_id=627', 'meet greet airport pickup service', 'Greece', 'transfers', 'pending', 'en'),\n('Klook', 'https://tp.media/r?marker=605475&trs=488170&p=4110&u=https%3A%2F%2Fklook.com&campaign_id=137', 'travel activities tours booking', 'Asia', 'activities', 'pending', 'en'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'museum attraction tickets online', 'Netherlands', 'activities', 'pending', 'en'),\n('WeGoTrip', 'https://tp.media/r?marker=605475&trs=488170&p=4487&u=https%3A%2F%2Fwegotrip.com&campaign_id=150', 'audio tour guides self guided', 'UK', 'activities', 'pending', 'en'),\n('TicketNetwork', 'https://tp.media/r?marker=605475&trs=488170&p=1948&u=https%3A%2F%2Fticketnetwork.com&campaign_id=72', 'concert sports events tickets', 'USA', 'activities', 'pending', 'en'),\n('Aviasales', 'https://tp.media/r?marker=605475&trs=488170&p=4114&u=https%3A%2F%2Faviasales.com&campaign_id=100', 'cheap flights comparison search', 'Russia', 'flights', 'pending', 'en'),\n('Radical Storage', 'https://tp.media/r?marker=605475&trs=488170&p=5867&u=https%3A%2F%2Fradicalstorage.com&campaign_id=209', 'luggage storage near me city', 'Global', 'storage', 'pending', 'en'),\n('SeaRadar', 'https://tp.media/r?marker=605475&trs=488170&p=5907&u=https%3A%2F%2Fsearadar.com&campaign_id=258', 'yacht boat rental charter', 'Mediterranean', 'rentals', 'pending', 'en'),\n('NordVPN', 'https://tp.media/click?shmarker=605475&promo_id=8986&source_type=link&type=click&campaign_id=631&trs=488170', 'secure vpn travel public wifi', 'Global', 'security', 'pending', 'en'),\n('NordPass', 'https://tp.media/click?shmarker=605475&promo_id=9023&source_type=link&type=click&campaign_id=631&trs=488170', 'password manager travel security', 'Global', 'security', 'pending', 'en');",
+                "options": {}
+            },
+            "name": "Restore Database",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                0
+            ],
+            "id": "restore_db",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hoursInterval": 1
+                        }
+                    ]
+                }
+            },
+            "name": "Hourly Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                0,
+                300
+            ],
+            "id": "schedule_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' LIMIT 1;",
+                "options": {}
+            },
+            "name": "Fetch Pending Offers",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                300
+            ],
+            "id": "fetch_offers",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "GET",
+                "url": "=https://api.pexels.com/v1/search?query={{$node[\"Fetch Pending Offers\"].json.primary_keyword}}&per_page=1&orientation=landscape",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "YOUR_PEXELS_API_KEY"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Fetch Image",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                380,
+                300
+            ],
+            "id": "fetch_image"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://157.180.81.63/v1/chat/completions",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer triprt-master-key34"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"qwen\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a travel journalist. Write a 500-word guide about {{ $node['Fetch Pending Offers'].json.primary_keyword }} for travelers. Include practical tips.\\n\\nInclude this affiliate link once: {{ $node['Fetch Pending Offers'].json.affiliate_link }}\\n\\nFormat with HTML tags like <h2>, <p>, <ul>, <li>.\"\n    }\n  ],\n  \"max_tokens\": 2000,\n  \"temperature\": 0.7\n}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "name": "Qwen AI Writer",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                500,
+                300
+            ],
+            "id": "qwen_ai",
+            "onError": "continueRegularOutput",
+            "retryOnFail": true,
+            "maxTries": 3,
+            "waitBetweenTries": 5000
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "quality_check",
+                            "leftValue": "={{ $json.choices ? $json.choices[0].message.content.length : 0 }}",
+                            "rightValue": 100,
+                            "operator": {
+                                "type": "number",
+                                "operation": "gt"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "name": "Quality Check",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                750,
+                300
+            ],
+            "id": "quality_gate"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/save-page",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Publish-Secret",
+                            "value": "livetrackings-pseo-2024"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"filename\": \"{{ $node['Fetch Pending Offers'].json.partner_name.toLowerCase().replace(/ /g, '-') }}\",\n  \"language\": \"{{ $node['Fetch Pending Offers'].json.language_code }}\",\n  \"subdirectory\": \"{{ $node['Fetch Pending Offers'].json.subdirectory }}\",\n  \"html\": {{ JSON.stringify('<img src=\"' + $node['Fetch Image'].json.photos[0].src.landscape + '\" alt=\"' + $node['Fetch Pending Offers'].json.primary_keyword + '\" style=\"width:100%; border-radius:8px; margin-bottom:30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);\" />' + $json.choices[0].message.content + '<div style=\"margin-top:50px; margin-bottom:30px; text-align:center; padding:40px; background:#eff6ff; border-radius:16px; border:1px solid #dbeafe;\"><h2 style=\"margin-top:0; margin-bottom:25px; color:#1e40af; font-size:2rem;\">Ready to plan your trip?</h2><a href=\"' + $node['Fetch Pending Offers'].json.affiliate_link + '\" target=\"_blank\" rel=\"nofollow sponsored\" style=\"display:inline-block; font-size:22px; padding:20px 45px; background:#2563eb; color:white; text-decoration:none; border-radius:50px; font-weight:800; box-shadow:0 10px 15px -3px rgba(37,99,235,0.4);\">Check Prices & Availability ➜</a><p style=\"margin-top:20px; color:#64748b; font-size:0.95rem; margin-bottom:0;\">Best price guaranteed • Verified Secure</p></div>') }}\n}",
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "name": "Publish to Replit",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1000,
+                200
+            ],
+            "id": "publish_replit",
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "UPDATE offers SET status = 'published' WHERE id = '{{ $node['Fetch Pending Offers'].json.id }}';",
+                "options": {}
+            },
+            "name": "Mark as Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                1250,
+                200
+            ],
+            "id": "mark_published",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "amount": 10,
+                "unit": "seconds"
+            },
+            "name": "Rate Limit Delay",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1000,
+                400
+            ],
+            "id": "rate_limit",
+            "webhookId": "delay-webhook-v13"
+        }
+    ],
+    "connections": {
+        "Click to Seed DB": {
+            "main": [
+                [
+                    {
+                        "node": "Restore Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Hourly Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Pending Offers": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Image",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Image": {
+            "main": [
+                [
+                    {
+                        "node": "Qwen AI Writer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Qwen AI Writer": {
+            "main": [
+                [
+                    {
+                        "node": "Quality Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Quality Check": {
+            "main": [
+                [
+                    {
+                        "node": "Publish to Replit",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Publish to Replit": {
+            "main": [
+                [
+                    {
+                        "node": "Mark as Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark as Published": {
+            "main": [
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Rate Limit Delay": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    }
+}
