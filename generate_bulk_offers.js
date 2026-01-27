@@ -35,3 +35,4 @@ sql += values.join(',\n') + ';';
 
 fs.writeFileSync('seed_bulk_offers.sql', sql);
 console.log(`Generated ${count} offers in seed_bulk_offers.sql`);
+

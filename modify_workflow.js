@@ -12,7 +12,7 @@ if (qwenNode) {
     // Update Auth Header
     const authHeader = qwenNode.parameters.headerParameters.parameters.find(p => p.name === "Authorization");
     if (authHeader) {
-        authHeader.value = "Bearer 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";
+        authHeader.value = "Bearer YOUR_OPENROUTER_API_KEY";
     }
     // Update Model in JSON Body
     qwenNode.parameters.jsonBody = qwenNode.parameters.jsonBody.replace('"model": "qwen"', '"model": "google/gemini-2.0-flash-001"');
@@ -37,3 +37,4 @@ if (workflow.connections["Mark as Published"]) {
 
 fs.writeFileSync('n8n_force_publish.json', JSON.stringify(workflow, null, 2));
 console.log("Workflow modified successfully");
+

@@ -1,4 +1,4 @@
-﻿{
+{
     "id":  "410",
     "finished":  true,
     "mode":  "trigger",
@@ -12,3 +12,5 @@
     "workflowId":  "WiSSG67QrVOWzGQI",
     "waitTill":  null
 }
+
+
