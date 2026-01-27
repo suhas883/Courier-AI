@@ -1,0 +1,125 @@
+﻿{
+    "data":  [
+                 {
+                     "id":  "410",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:50:39.019Z",
+                     "stoppedAt":  "2026-01-26T11:53:19.917Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "409",
+                     "finished":  true,
+                     "mode":  "manual",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:47:56.139Z",
+                     "stoppedAt":  "2026-01-26T11:52:18.342Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "408",
+                     "finished":  true,
+                     "mode":  "manual",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:47:39.190Z",
+                     "stoppedAt":  "2026-01-26T11:47:52.166Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "406",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:40:39.077Z",
+                     "stoppedAt":  "2026-01-26T11:40:40.049Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "405",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:35:39.027Z",
+                     "stoppedAt":  "2026-01-26T11:35:39.153Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "404",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:30:39.022Z",
+                     "stoppedAt":  "2026-01-26T11:30:39.145Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "403",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:25:39.022Z",
+                     "stoppedAt":  "2026-01-26T11:30:52.894Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "402",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:20:39.022Z",
+                     "stoppedAt":  "2026-01-26T11:33:43.674Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "401",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:15:39.031Z",
+                     "stoppedAt":  "2026-01-26T11:35:41.694Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 },
+                 {
+                     "id":  "400",
+                     "finished":  true,
+                     "mode":  "trigger",
+                     "retryOf":  null,
+                     "retrySuccessId":  null,
+                     "status":  "success",
+                     "startedAt":  "2026-01-26T11:10:39.017Z",
+                     "stoppedAt":  "2026-01-26T11:10:39.881Z",
+                     "workflowId":  "WiSSG67QrVOWzGQI",
+                     "waitTill":  null
+                 }
+             ],
+    "nextCursor":  "eyJsYXN0SWQiOiI0MDAiLCJsaW1pdCI6MTB9"
+}

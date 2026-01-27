@@ -1,0 +1,715 @@
+﻿{
+    "updatedAt":  "2026-01-26T10:46:32.249Z",
+    "createdAt":  "2026-01-25T12:19:49.453Z",
+    "id":  "WiSSG67QrVOWzGQI",
+    "name":  "LiveTrackings - V24 MULTILINGUAL (FR, ES, DE, IT, NL)",
+    "description":  null,
+    "active":  true,
+    "isArchived":  false,
+    "nodes":  [
+                  {
+                      "parameters":  {
+
+                                     },
+                      "name":  "Click to Seed DB",
+                      "type":  "n8n-nodes-base.manualTrigger",
+                      "typeVersion":  1,
+                      "position":  [
+                                       0,
+                                       0
+                                   ],
+                      "id":  "manual_trigger"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "executeQuery",
+                                         "query":  "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT \u0027en\u0027,\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT \u0027pending\u0027\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, target_country, subdirectory, status, language_code) VALUES\n-- English (EN)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027flight delay compensation\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027airline refund help\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim for international travel\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027museum tickets online\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Aviasales\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4114\u0026u=https%3A%2F%2Faviasales.com\u0026campaign_id=100\u0027, \u0027cheap flights scanner\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027NordVPN\u0027, \u0027https://tp.media/click?shmarker=605475\u0026promo_id=8986\u0026source_type=link\u0026type=click\u0026campaign_id=631\u0026trs=488170\u0027, \u0027best travel vpn\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n\n-- French (FR)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027indemnisation vol retardé\u0027, \u0027France\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027réclamation vol annulé\u0027, \u0027France\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim voyage international\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027billets musées et attractions\u0027, \u0027France\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n\n-- Spanish (ES)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027compensación vuelo retrasado\u0027, \u0027Spain\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027reclamación cancelación vuelo\u0027, \u0027Spain\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim para viajar\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027entradas museos y atracciones\u0027, \u0027Spain\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n\n-- German (DE)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027flugverspätung entschädigung\u0027, \u0027Germany\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027flugannullierung rechte\u0027, \u0027Germany\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim für reisen\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027museen und sehenswürdigkeiten tickets\u0027, \u0027Germany\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n\n-- Italian (IT)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027risarcimento ritardo volo\u0027, \u0027Italy\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027rimborso volo cancellato\u0027, \u0027Italy\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim per viaggiare\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027biglietti musei e attrazioni\u0027, \u0027Italy\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n\n-- Dutch (NL)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027vluchtvertraging vergoeding\u0027, \u0027Netherlands\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027vluchtannulering rechten\u0027, \u0027Netherlands\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim voor reizen\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027tickets musea en attracties\u0027, \u0027Netherlands\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027);",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Restore Database",
+                      "type":  "n8n-nodes-base.postgres",
+                      "typeVersion":  2.5,
+                      "position":  [
+                                       256,
+                                       0
+                                   ],
+                      "id":  "restore_db",
+                      "credentials":  {
+                                          "postgres":  {
+                                                           "id":  "LYfmDpK4VdjkKcLe",
+                                                           "name":  "Neon Database"
+                                                       }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "executeQuery",
+                                         "query":  "SELECT * FROM offers WHERE status = \u0027pending\u0027 LIMIT 1;",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Fetch Pending Offers",
+                      "type":  "n8n-nodes-base.postgres",
+                      "typeVersion":  2.5,
+                      "position":  [
+                                       256,
+                                       304
+                                   ],
+                      "id":  "fetch_offers",
+                      "credentials":  {
+                                          "postgres":  {
+                                                           "id":  "LYfmDpK4VdjkKcLe",
+                                                           "name":  "Neon Database"
+                                                       }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAlJy74-f-oy4RS6We_qA6CaZ9NSyQPjTo",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "{\"contents\":[{\"parts\":[{\"text\":\"You are a native {{ $node[\u0027Fetch Pending Offers\u0027].json.language_code }} SEO Content Specialist for a package tracking website. Write a premium 800-word SEO guide about {{ $node[\u0027Fetch Pending Offers\u0027].json.primary_keyword }} in {{ $node[\u0027Fetch Pending Offers\u0027].json.language_code }}. MANDATORY: Include this affiliate link {{ $node[\u0027Fetch Pending Offers\u0027].json.affiliate_link }} naturally in the first paragraph as an inline HTML anchor. Use semantic HTML: \u003ch2\u003e for main sections, \u003ch3\u003e for subsections, \u003cp\u003e for body text, and \u003cul\u003e for lists. Focus on courier tracking, delivery status, and shipping information. Write naturally in the target language. Return ONLY the HTML content, no markdown.\"}]}],\"generationConfig\":{\"temperature\":0.7,\"maxOutputTokens\":2048}}",
+                                         "options":  {
+                                                         "timeout":  300000
+                                                     }
+                                     },
+                      "name":  "AI Content Writer",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       512,
+                                       304
+                                   ],
+                      "id":  "ai_writer",
+                      "retryOnFail":  true,
+                      "maxTries":  3,
+                      "waitBetweenTries":  5000,
+                      "onError":  "continueRegularOutput"
+                  },
+                  {
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "string":  [
+                                                                           {
+                                                                               "value1":  "={{ $json.candidates[0].content.parts[0].text.length }}",
+                                                                               "operation":  "largerEqual",
+                                                                               "value2":  "100"
+                                                                           }
+                                                                       ]
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Quality Gate",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2,
+                      "position":  [
+                                       752,
+                                       304
+                                   ],
+                      "id":  "quality_gate"
+                  },
+                  {
+                      "parameters":  {
+                                         "method":  "POST",
+                                         "url":  "https://livetrackings.com/api/save-page",
+                                         "sendHeaders":  true,
+                                         "headerParameters":  {
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "X-Publish-Secret",
+                                                                                         "value":  "livetrackings-pseo-2024"
+                                                                                     },
+                                                                                     {
+                                                                                         "name":  "Content-Type",
+                                                                                         "value":  "application/json"
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                         "sendBody":  true,
+                                         "specifyBody":  "json",
+                                         "jsonBody":  "{\"filename\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.primary_keyword.toLowerCase().replace(/ /g, \u0027-\u0027) }}.html\",\"language\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.language_code }}\",\"subdirectory\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.subdirectory }}\",\"affiliate_link\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.affiliate_link }}\",\"html\":{{ JSON.stringify($node[\u0027AI Content Writer\u0027].json.candidates[0].content.parts[0].text) }}}",
+                                         "options":  {
+                                                         "timeout":  30000
+                                                     }
+                                     },
+                      "name":  "Publish to Replit",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       1008,
+                                       208
+                                   ],
+                      "id":  "publish_replit",
+                      "onError":  "continueRegularOutput"
+                  },
+                  {
+                      "parameters":  {
+                                         "operation":  "executeQuery",
+                                         "query":  "UPDATE offers SET status = \u0027published\u0027 WHERE id = \u0027{{ $node[\u0027Fetch Pending Offers\u0027].json.id }}\u0027;",
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "name":  "Mark as Published",
+                      "type":  "n8n-nodes-base.postgres",
+                      "typeVersion":  2.5,
+                      "position":  [
+                                       1264,
+                                       208
+                                   ],
+                      "id":  "mark_published",
+                      "credentials":  {
+                                          "postgres":  {
+                                                           "id":  "LYfmDpK4VdjkKcLe",
+                                                           "name":  "Neon Database"
+                                                       }
+                                      }
+                  },
+                  {
+                      "parameters":  {
+                                         "amount":  10
+                                     },
+                      "name":  "Rate Limit Delay",
+                      "type":  "n8n-nodes-base.wait",
+                      "typeVersion":  1.1,
+                      "position":  [
+                                       1008,
+                                       400
+                                   ],
+                      "id":  "rate_limit",
+                      "webhookId":  "delay-webhook-v24-multilingual"
+                  },
+                  {
+                      "parameters":  {
+                                         "rule":  {
+                                                      "interval":  [
+                                                                       {
+                                                                           "field":  "minutes"
+                                                                       }
+                                                                   ]
+                                                  }
+                                     },
+                      "name":  "5-Minute Schedule",
+                      "type":  "n8n-nodes-base.scheduleTrigger",
+                      "typeVersion":  1.2,
+                      "position":  [
+                                       0,
+                                       304
+                                   ],
+                      "id":  "schedule_trigger"
+                  }
+              ],
+    "connections":  {
+                        "Click to Seed DB":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Restore Database",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Fetch Pending Offers":  {
+                                                     "main":  [
+                                                                  [
+                                                                      {
+                                                                          "node":  "AI Content Writer",
+                                                                          "type":  "main",
+                                                                          "index":  0
+                                                                      }
+                                                                  ]
+                                                              ]
+                                                 },
+                        "AI Content Writer":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Quality Gate",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Quality Gate":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Publish to Replit",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              },
+                                                              {
+                                                                  "node":  "Rate Limit Delay",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Publish to Replit":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Mark as Published",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Mark as Published":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Rate Limit Delay",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Rate Limit Delay":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Fetch Pending Offers",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "5-Minute Schedule":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Fetch Pending Offers",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              }
+                    },
+    "settings":  {
+                     "executionOrder":  "v1",
+                     "callerPolicy":  "workflowsFromSameOwner",
+                     "availableInMCP":  false,
+                     "timeSavedMode":  "fixed"
+                 },
+    "staticData":  {
+                       "node:2-Minute Schedule":  {
+                                                      "recurrenceRules":  [
+
+                                                                          ]
+                                                  },
+                       "node:5-Minute Schedule":  {
+                                                      "recurrenceRules":  [
+
+                                                                          ]
+                                                  }
+                   },
+    "meta":  null,
+    "pinData":  {
+
+                },
+    "versionId":  "290ab5ac-a859-4774-b875-1975b2b82e32",
+    "activeVersionId":  "290ab5ac-a859-4774-b875-1975b2b82e32",
+    "versionCounter":  91,
+    "triggerCount":  1,
+    "shared":  [
+                   {
+                       "updatedAt":  "2026-01-25T12:19:49.455Z",
+                       "createdAt":  "2026-01-25T12:19:49.455Z",
+                       "role":  "workflow:owner",
+                       "workflowId":  "WiSSG67QrVOWzGQI",
+                       "projectId":  "hx1ffTpTlal3XTuC",
+                       "project":  {
+                                       "updatedAt":  "2026-01-25T12:17:01.059Z",
+                                       "createdAt":  "2026-01-25T12:16:36.310Z",
+                                       "id":  "hx1ffTpTlal3XTuC",
+                                       "name":  "suhas rg \u003csuhas883@outlook.com\u003e",
+                                       "type":  "personal",
+                                       "icon":  null,
+                                       "description":  null,
+                                       "creatorId":  "92c98913-7380-40eb-b791-339cf3cba170",
+                                       "projectRelations":  [
+                                                                {
+                                                                    "updatedAt":  "2026-01-25T12:16:36.311Z",
+                                                                    "createdAt":  "2026-01-25T12:16:36.311Z",
+                                                                    "userId":  "92c98913-7380-40eb-b791-339cf3cba170",
+                                                                    "projectId":  "hx1ffTpTlal3XTuC",
+                                                                    "user":  {
+                                                                                 "updatedAt":  "2026-01-26T09:16:30.000Z",
+                                                                                 "createdAt":  "2026-01-25T12:16:35.802Z",
+                                                                                 "id":  "92c98913-7380-40eb-b791-339cf3cba170",
+                                                                                 "email":  "suhas883@outlook.com",
+                                                                                 "firstName":  "suhas",
+                                                                                 "lastName":  "rg",
+                                                                                 "personalizationAnswers":  {
+                                                                                                                "version":  "v4",
+                                                                                                                "personalization_survey_submitted_at":  "2026-01-25T12:17:13.342Z",
+                                                                                                                "personalization_survey_n8n_version":  "2.3.4",
+                                                                                                                "companyType":  "personal",
+                                                                                                                "reportedSource":  "event"
+                                                                                                            },
+                                                                                 "settings":  {
+                                                                                                  "userActivated":  true,
+                                                                                                  "firstSuccessfulWorkflowId":  "WiSSG67QrVOWzGQI",
+                                                                                                  "userActivatedAt":  1769352897021
+                                                                                              },
+                                                                                 "disabled":  false,
+                                                                                 "mfaEnabled":  false,
+                                                                                 "lastActiveAt":  "2026-01-26",
+                                                                                 "isPending":  false
+                                                                             }
+                                                                }
+                                                            ]
+                                   }
+                   }
+               ],
+    "tags":  [
+
+             ],
+    "activeVersion":  {
+                          "updatedAt":  "2026-01-26T10:46:32.250Z",
+                          "createdAt":  "2026-01-26T10:46:32.250Z",
+                          "versionId":  "290ab5ac-a859-4774-b875-1975b2b82e32",
+                          "workflowId":  "WiSSG67QrVOWzGQI",
+                          "nodes":  [
+                                        {
+                                            "parameters":  {
+
+                                                           },
+                                            "name":  "Click to Seed DB",
+                                            "type":  "n8n-nodes-base.manualTrigger",
+                                            "typeVersion":  1,
+                                            "position":  [
+                                                             0,
+                                                             0
+                                                         ],
+                                            "id":  "manual_trigger"
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "operation":  "executeQuery",
+                                                               "query":  "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT \u0027en\u0027,\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT \u0027pending\u0027\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, target_country, subdirectory, status, language_code) VALUES\n-- English (EN)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027flight delay compensation\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027airline refund help\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim for international travel\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027museum tickets online\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027Aviasales\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4114\u0026u=https%3A%2F%2Faviasales.com\u0026campaign_id=100\u0027, \u0027cheap flights scanner\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n(\u0027NordVPN\u0027, \u0027https://tp.media/click?shmarker=605475\u0026promo_id=8986\u0026source_type=link\u0026type=click\u0026campaign_id=631\u0026trs=488170\u0027, \u0027best travel vpn\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027en\u0027),\n\n-- French (FR)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027indemnisation vol retardé\u0027, \u0027France\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027réclamation vol annulé\u0027, \u0027France\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim voyage international\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027billets musées et attractions\u0027, \u0027France\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027fr\u0027),\n\n-- Spanish (ES)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027compensación vuelo retrasado\u0027, \u0027Spain\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027reclamación cancelación vuelo\u0027, \u0027Spain\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim para viajar\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027entradas museos y atracciones\u0027, \u0027Spain\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027es\u0027),\n\n-- German (DE)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027flugverspätung entschädigung\u0027, \u0027Germany\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027flugannullierung rechte\u0027, \u0027Germany\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim für reisen\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027museen und sehenswürdigkeiten tickets\u0027, \u0027Germany\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027de\u0027),\n\n-- Italian (IT)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027risarcimento ritardo volo\u0027, \u0027Italy\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027rimborso volo cancellato\u0027, \u0027Italy\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim per viaggiare\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027biglietti musei e attrazioni\u0027, \u0027Italy\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027it\u0027),\n\n-- Dutch (NL)\n(\u0027Compensair\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fcompensair.com\u0026campaign_id=86\u0027, \u0027vluchtvertraging vergoeding\u0027, \u0027Netherlands\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027),\n(\u0027AirHelp\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=4129\u0026u=https%3A%2F%2Fairhelp.com\u0026campaign_id=86\u0027, \u0027vluchtannulering rechten\u0027, \u0027Netherlands\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027),\n(\u0027Airalo eSIM\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=8310\u0026u=https%3A%2F%2Fairalo.com\u0026campaign_id=541\u0027, \u0027esim voor reizen\u0027, \u0027Global\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027),\n(\u0027Tiqets\u0027, \u0027https://tp.media/r?marker=605475\u0026trs=488170\u0026p=2074\u0026u=https%3A%2F%2Ftiqets.com\u0026campaign_id=89\u0027, \u0027tickets musea en attracties\u0027, \u0027Netherlands\u0027, \u0027claims\u0027, \u0027pending\u0027, \u0027nl\u0027);",
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "name":  "Restore Database",
+                                            "type":  "n8n-nodes-base.postgres",
+                                            "typeVersion":  2.5,
+                                            "position":  [
+                                                             256,
+                                                             0
+                                                         ],
+                                            "id":  "restore_db",
+                                            "credentials":  {
+                                                                "postgres":  {
+                                                                                 "id":  "LYfmDpK4VdjkKcLe",
+                                                                                 "name":  "Neon Database"
+                                                                             }
+                                                            }
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "operation":  "executeQuery",
+                                                               "query":  "SELECT * FROM offers WHERE status = \u0027pending\u0027 LIMIT 1;",
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "name":  "Fetch Pending Offers",
+                                            "type":  "n8n-nodes-base.postgres",
+                                            "typeVersion":  2.5,
+                                            "position":  [
+                                                             256,
+                                                             304
+                                                         ],
+                                            "id":  "fetch_offers",
+                                            "credentials":  {
+                                                                "postgres":  {
+                                                                                 "id":  "LYfmDpK4VdjkKcLe",
+                                                                                 "name":  "Neon Database"
+                                                                             }
+                                                            }
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "method":  "POST",
+                                                               "url":  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAlJy74-f-oy4RS6We_qA6CaZ9NSyQPjTo",
+                                                               "sendHeaders":  true,
+                                                               "headerParameters":  {
+                                                                                        "parameters":  [
+                                                                                                           {
+                                                                                                               "name":  "Content-Type",
+                                                                                                               "value":  "application/json"
+                                                                                                           }
+                                                                                                       ]
+                                                                                    },
+                                                               "sendBody":  true,
+                                                               "specifyBody":  "json",
+                                                               "jsonBody":  "{\"contents\":[{\"parts\":[{\"text\":\"You are a native {{ $node[\u0027Fetch Pending Offers\u0027].json.language_code }} SEO Content Specialist for a package tracking website. Write a premium 800-word SEO guide about {{ $node[\u0027Fetch Pending Offers\u0027].json.primary_keyword }} in {{ $node[\u0027Fetch Pending Offers\u0027].json.language_code }}. MANDATORY: Include this affiliate link {{ $node[\u0027Fetch Pending Offers\u0027].json.affiliate_link }} naturally in the first paragraph as an inline HTML anchor. Use semantic HTML: \u003ch2\u003e for main sections, \u003ch3\u003e for subsections, \u003cp\u003e for body text, and \u003cul\u003e for lists. Focus on courier tracking, delivery status, and shipping information. Write naturally in the target language. Return ONLY the HTML content, no markdown.\"}]}],\"generationConfig\":{\"temperature\":0.7,\"maxOutputTokens\":2048}}",
+                                                               "options":  {
+                                                                               "timeout":  300000
+                                                                           }
+                                                           },
+                                            "name":  "AI Content Writer",
+                                            "type":  "n8n-nodes-base.httpRequest",
+                                            "typeVersion":  4.2,
+                                            "position":  [
+                                                             512,
+                                                             304
+                                                         ],
+                                            "id":  "ai_writer",
+                                            "retryOnFail":  true,
+                                            "maxTries":  3,
+                                            "waitBetweenTries":  5000,
+                                            "onError":  "continueRegularOutput"
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "conditions":  {
+                                                                                  "string":  [
+                                                                                                 {
+                                                                                                     "value1":  "={{ $json.candidates[0].content.parts[0].text.length }}",
+                                                                                                     "operation":  "largerEqual",
+                                                                                                     "value2":  "100"
+                                                                                                 }
+                                                                                             ]
+                                                                              },
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "name":  "Quality Gate",
+                                            "type":  "n8n-nodes-base.if",
+                                            "typeVersion":  2,
+                                            "position":  [
+                                                             752,
+                                                             304
+                                                         ],
+                                            "id":  "quality_gate"
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "method":  "POST",
+                                                               "url":  "https://livetrackings.com/api/publish",
+                                                               "sendHeaders":  true,
+                                                               "headerParameters":  {
+                                                                                        "parameters":  [
+                                                                                                           {
+                                                                                                               "name":  "X-Publish-Secret",
+                                                                                                               "value":  "livetrackings-pseo-2024"
+                                                                                                           },
+                                                                                                           {
+                                                                                                               "name":  "Content-Type",
+                                                                                                               "value":  "application/json"
+                                                                                                           }
+                                                                                                       ]
+                                                                                    },
+                                                               "sendBody":  true,
+                                                               "specifyBody":  "json",
+                                                               "jsonBody":  "{\"filename\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.primary_keyword.toLowerCase().replace(/ /g, \u0027-\u0027) }}.html\",\"language\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.language_code }}\",\"subdirectory\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.subdirectory }}\",\"affiliate_link\":\"={{ $node[\u0027Fetch Pending Offers\u0027].json.affiliate_link }}\",\"html\":{{ JSON.stringify($node[\u0027AI Content Writer\u0027].json.candidates[0].content.parts[0].text) }}}",
+                                                               "options":  {
+                                                                               "timeout":  30000
+                                                                           }
+                                                           },
+                                            "name":  "Publish to Replit",
+                                            "type":  "n8n-nodes-base.httpRequest",
+                                            "typeVersion":  4.2,
+                                            "position":  [
+                                                             1008,
+                                                             208
+                                                         ],
+                                            "id":  "publish_replit",
+                                            "onError":  "continueRegularOutput"
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "operation":  "executeQuery",
+                                                               "query":  "UPDATE offers SET status = \u0027published\u0027 WHERE id = \u0027{{ $node[\u0027Fetch Pending Offers\u0027].json.id }}\u0027;",
+                                                               "options":  {
+
+                                                                           }
+                                                           },
+                                            "name":  "Mark as Published",
+                                            "type":  "n8n-nodes-base.postgres",
+                                            "typeVersion":  2.5,
+                                            "position":  [
+                                                             1264,
+                                                             208
+                                                         ],
+                                            "id":  "mark_published",
+                                            "credentials":  {
+                                                                "postgres":  {
+                                                                                 "id":  "LYfmDpK4VdjkKcLe",
+                                                                                 "name":  "Neon Database"
+                                                                             }
+                                                            }
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "amount":  10
+                                                           },
+                                            "name":  "Rate Limit Delay",
+                                            "type":  "n8n-nodes-base.wait",
+                                            "typeVersion":  1.1,
+                                            "position":  [
+                                                             1008,
+                                                             400
+                                                         ],
+                                            "id":  "rate_limit",
+                                            "webhookId":  "delay-webhook-v24-multilingual"
+                                        },
+                                        {
+                                            "parameters":  {
+                                                               "rule":  {
+                                                                            "interval":  [
+                                                                                             {
+                                                                                                 "field":  "minutes"
+                                                                                             }
+                                                                                         ]
+                                                                        }
+                                                           },
+                                            "name":  "5-Minute Schedule",
+                                            "type":  "n8n-nodes-base.scheduleTrigger",
+                                            "typeVersion":  1.2,
+                                            "position":  [
+                                                             0,
+                                                             304
+                                                         ],
+                                            "id":  "schedule_trigger"
+                                        }
+                                    ],
+                          "connections":  {
+                                              "Click to Seed DB":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Restore Database",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                                              "Fetch Pending Offers":  {
+                                                                           "main":  [
+                                                                                        [
+                                                                                            {
+                                                                                                "node":  "AI Content Writer",
+                                                                                                "type":  "main",
+                                                                                                "index":  0
+                                                                                            }
+                                                                                        ]
+                                                                                    ]
+                                                                       },
+                                              "AI Content Writer":  {
+                                                                        "main":  [
+                                                                                     [
+                                                                                         {
+                                                                                             "node":  "Quality Gate",
+                                                                                             "type":  "main",
+                                                                                             "index":  0
+                                                                                         }
+                                                                                     ]
+                                                                                 ]
+                                                                    },
+                                              "Quality Gate":  {
+                                                                   "main":  [
+                                                                                [
+                                                                                    {
+                                                                                        "node":  "Publish to Replit",
+                                                                                        "type":  "main",
+                                                                                        "index":  0
+                                                                                    },
+                                                                                    {
+                                                                                        "node":  "Rate Limit Delay",
+                                                                                        "type":  "main",
+                                                                                        "index":  0
+                                                                                    }
+                                                                                ]
+                                                                            ]
+                                                               },
+                                              "Publish to Replit":  {
+                                                                        "main":  [
+                                                                                     [
+                                                                                         {
+                                                                                             "node":  "Mark as Published",
+                                                                                             "type":  "main",
+                                                                                             "index":  0
+                                                                                         }
+                                                                                     ]
+                                                                                 ]
+                                                                    },
+                                              "Mark as Published":  {
+                                                                        "main":  [
+                                                                                     [
+                                                                                         {
+                                                                                             "node":  "Rate Limit Delay",
+                                                                                             "type":  "main",
+                                                                                             "index":  0
+                                                                                         }
+                                                                                     ]
+                                                                                 ]
+                                                                    },
+                                              "Rate Limit Delay":  {
+                                                                       "main":  [
+                                                                                    [
+                                                                                        {
+                                                                                            "node":  "Fetch Pending Offers",
+                                                                                            "type":  "main",
+                                                                                            "index":  0
+                                                                                        }
+                                                                                    ]
+                                                                                ]
+                                                                   },
+                                              "5-Minute Schedule":  {
+                                                                        "main":  [
+                                                                                     [
+                                                                                         {
+                                                                                             "node":  "Fetch Pending Offers",
+                                                                                             "type":  "main",
+                                                                                             "index":  0
+                                                                                         }
+                                                                                     ]
+                                                                                 ]
+                                                                    }
+                                          },
+                          "authors":  "suhas rg",
+                          "name":  null,
+                          "description":  null,
+                          "autosaved":  false,
+                          "workflowPublishHistory":  [
+                                                         {
+                                                             "createdAt":  "2026-01-26T10:46:32.309Z",
+                                                             "id":  39,
+                                                             "workflowId":  "WiSSG67QrVOWzGQI",
+                                                             "versionId":  "290ab5ac-a859-4774-b875-1975b2b82e32",
+                                                             "event":  "activated",
+                                                             "userId":  "92c98913-7380-40eb-b791-339cf3cba170"
+                                                         }
+                                                     ]
+                      }
+}

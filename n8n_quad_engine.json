@@ -1,0 +1,221 @@
+{
+    "name": "Quad-Engine",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "minutes": 0,
+                            "seconds": 0
+                        }
+                    ]
+                }
+            },
+            "name": "Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                250,
+                300
+            ],
+            "id": "schedule-trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' LIMIT 50;"
+            },
+            "name": "Get Pending Missions",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.1,
+            "position": [
+                450,
+                300
+            ],
+            "id": "get-missions",
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_POSTGRES_CREDENTIALS_ID",
+                    "name": "Postgres"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "// Multilingual Expansion & Link Mapping\nconst languages = ['en', 'de', 'fr', 'es', 'it'];\nconst linkMap = {\n  \"activities\": \"https://tp.media/r?marker=605475&trs=488170&p=4110&u=https%3A%2F%2Fklook.com&campaign_id=137\",\n  \"meet-greet\": \"https://tp.media/r?marker=605475&trs=488170&p=8919&u=https%3A%2F%2Fwelcomepickups.com&campaign_id=627\",\n  \"attractions\": \"https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89\",\n  \"global-sim\": \"https://tp.media/r?marker=605475&trs=488170&p=5998&u=https%3A%2F%2Fyesim.tech&campaign_id=224\",\n  \"cargo-insure\": \"https://tp.media/r?marker=605475&trs=488170&p=5869&u=https%3A%2F%2Fektatraveling.com&campaign_id=225\",\n  \"airport-taxi\": \"https://tp.media/r?marker=605475&trs=488170&p=647&u=https%3A%2F%2Fkiwitaxi.com&campaign_id=1\",\n  \"private-transfer\": \"https://tp.media/r?marker=605475&trs=488170&p=4439&u=https%3A%2F%2Fgettransfer.com&campaign_id=147\",\n  \"esim-data\": \"https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541\",\n  \"roaming-sim\": \"https://tp.media/r?marker=605475&trs=488170&p=2762&u=https%3A%2F%2Fw1.drimsim.com&campaign_id=102\",\n  \"audio-tours\": \"https://tp.media/r?marker=605475&trs=488170&p=4487&u=https%3A%2F%2Fwegotrip.com&campaign_id=150\",\n  \"yacht-rent\": \"https://tp.media/r?marker=605475&trs=488170&p=5907&u=https%3A%2F%2Fsearadar.com&campaign_id=258\",\n  \"luggage-storage\": \"https://tp.media/r?marker=605475&trs=488170&p=5867&u=https%3A%2F%2Fradicalstorage.com&campaign_id=209\",\n  \"events\": \"https://tp.media/r?marker=605475&trs=488170&p=1948&u=https%3A%2F%2Fticketnetwork.com&campaign_id=72\",\n  \"cheap-flights\": \"https://tp.media/r?marker=605475&trs=488170&p=4114&u=https%3A%2F%2Faviasales.com&campaign_id=100\",\n  \"shuttles\": \"https://tp.media/r?marker=605475&trs=488170&p=657&u=https%3A%2F%2Fintui.travel&campaign_id=22\",\n  \"flight-claims\": \"https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86\",\n  \"city-rides\": \"https://tp.media/click?shmarker=605475&promo_id=8395&source_type=link&type=click&campaign_id=371&trs=488170\",\n  \"secure-net\": \"https://tp.media/click?shmarker=605475&promo_id=8986&source_type=link&type=click&campaign_id=631&trs=488170\",\n  \"password-vault\": \"https://tp.media/click?shmarker=605475&promo_id=9023&source_type=link&type=click&campaign_id=631&trs=488170\"\n};\n\nconst results = [];\n// Process each incoming mission\n// 'item.json' contains the row from Postgres (courier_name, city, etc)\nconst mission = $input.item.json;\n\nfor (const lang of languages) {\n  results.push({\n    json: {\n      ...mission,\n      target_language: lang,\n      // Use the subdirectory to map to an affiliate link, or default to secure-net\n      aff_link: linkMap[mission.subdirectory] || linkMap[\"secure-net\"]\n    }\n  });\n}\nreturn results;"
+            },
+            "name": "Quad Multiplier",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                650,
+                300
+            ],
+            "id": "multiplier"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://openrouter.ai/api/v1/chat/completions",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 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"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "name": "HTTP-Referer",
+                            "value": "https://livetrackings.com"
+                        },
+                        {
+                            "name": "X-Title",
+                            "value": "QuadEngine"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "contentType": "json",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "google/gemini-2.0-flash-exp:free"
+                        },
+                        {
+                            "name": "messages",
+                            "value": "={{ [\n  {\n    \"role\": \"system\",\n    \"content\": \"You are an anonymous Logistics Expert.\"\n  },\n  {\n    \"role\": \"user\",\n    \"content\": \"Write a utility guide in \" + $json.target_language + \".\\n\\nInstructions:\\n1. Detail the status for \" + $json.courier_name + \" in \" + $json.city + \".\\n2. Include a CSS-styled 'Alert Box' at the top (use blue for utility).\\n3. Use professional logistics terminology.\\n4. Conversion Box: Add a 'Resolution Center' section with a call-to-action button linking to \" + $json.aff_link + \".\\n5. Styling: Output raw HTML with embedded CSS. Use system fonts (Inter/Roboto), clean padding (20px), and a professional 'Dashboard' look. NO JAVASCRIPT.\"\n  }\n] }}"
+                        }
+                    ]
+                }
+            },
+            "name": "Gemini Brain",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                850,
+                300
+            ],
+            "id": "gemini-core"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/save-page",
+                "sendBody": true,
+                "contentType": "json",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "filename",
+                            "value": "={{ $json.courier_name.toLowerCase() }}-{{ $json.city.toLowerCase() }}-{{ $json.id }}"
+                        },
+                        {
+                            "name": "content",
+                            "value": "={{ $json.choices[0].message.content }}"
+                        },
+                        {
+                            "name": "subdirectory",
+                            "value": "={{ $json.subdirectory || 'logistics' }}"
+                        },
+                        {
+                            "name": "language",
+                            "value": "={{ $json.target_language }}"
+                        }
+                    ]
+                }
+            },
+            "name": "Publisher",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1050,
+                300
+            ],
+            "id": "publisher"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "=UPDATE offers SET status = 'published' WHERE id = '{{ $json.id }}';"
+            },
+            "name": "Mark Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.1,
+            "position": [
+                1250,
+                300
+            ],
+            "id": "postgres-update",
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_POSTGRES_CREDENTIALS_ID",
+                    "name": "Postgres"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Get Pending Missions",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Pending Missions": {
+            "main": [
+                [
+                    {
+                        "node": "Quad Multiplier",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Quad Multiplier": {
+            "main": [
+                [
+                    {
+                        "node": "Gemini Brain",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gemini Brain": {
+            "main": [
+                [
+                    {
+                        "node": "Publisher",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Publisher": {
+            "main": [
+                [
+                    {
+                        "node": "Mark Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

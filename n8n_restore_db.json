@@ -1,0 +1,50 @@
+{
+    "name": "LiveTrackings DB Restorer (Final)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "On Click",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                200,
+                300
+            ],
+            "id": "trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT 'en',\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT 'pending'\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, subdirectory, target_country, status) VALUES\n('Compensair', 'https://www.compensair.com/?tp_source=605475', 'flight compensation', 'travel', 'Global', 'pending'),\n('Airalo', 'https://airalo.tp.st/ABCdef12', 'esim travel data', 'travel', 'Global', 'pending'),\n('Aviasales', 'https://aviasales.tp.st/GHIjkl34', 'cheap flights', 'travel', 'Global', 'pending'),\n('Ekta', 'https://ekta.tp.st/MNOpqr56', 'travel insurance', 'insurance', 'Global', 'pending'),\n('Viator', 'https://viator.tp.st/STUvwx78', 'tours and activities', 'travel', 'Global', 'pending'),\n('GetYourGuide', 'https://getyourguide.tp.st/YZAabc90', 'city guides', 'travel', 'Global', 'pending'),\n('Klook', 'https://klook.tp.st/DEFghi12', 'attractions tickets', 'travel', 'Asia', 'pending'),\n('Trip.com', 'https://trip.tp.st/JKLmno34', 'hotel booking', 'travel', 'Global', 'pending'),\n('Kiwi.com', 'https://kiwi.tp.st/PQRstu56', 'flight deals', 'travel', 'Global', 'pending'),\n('Drimsim', 'https://drimsim.tp.st/VWXyz78', 'universal sim card', 'travel', 'Global', 'pending'),\n('Discover Cars', 'https://discovercars.tp.st/ABCdef90', 'car rental', 'travel', 'Global', 'pending'),\n('Economybookings', 'https://economybookings.tp.st/GHIjkl12', 'cheap car hire', 'travel', 'Global', 'pending'),\n('QEEQ', 'https://qeeq.tp.st/MNOpqr34', 'car rental comparison', 'travel', 'Global', 'pending'),\n('Tiqets', 'https://tiqets.tp.st/STUvwx56', 'museum tickets', 'travel', 'Europe', 'pending'),\n('HolidayTaxis', 'https://holidaytaxis.tp.st/YZAabc78', 'airport transfers', 'travel', 'Global', 'pending'),\n('WeGoTrip', 'https://wegotrip.tp.st/DEFghi90', 'audio guides', 'travel', 'Global', 'pending'),\n('Priority Pass', 'https://prioritypass.tp.st/JKLmno12', 'airport lounge access', 'travel', 'Global', 'pending'),\n('BikesBooking', 'https://bikesbooking.tp.st/PQRstu34', 'bike rental', 'travel', 'Global', 'pending');",
+                "options": {}
+            },
+            "name": "Restore Database",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                450,
+                300
+            ],
+            "id": "restore",
+            "credentials": {
+                "postgres": {
+                    "id": "neon-db",
+                    "name": "Neon Database"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "On Click": {
+            "main": [
+                [
+                    {
+                        "node": "Restore Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

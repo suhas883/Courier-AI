@@ -1,0 +1,307 @@
+{
+    "name": "Triprt MASTER (Qwen 1.5B + High Revenue)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -200,
+                0
+            ],
+            "id": "manual_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "={{ $node[\"Restore Database\"].json[\"query\"] }}",
+                "options": {}
+            },
+            "name": "Restore Database",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                0,
+                0
+            ],
+            "id": "restore_db",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutes": 30
+                        }
+                    ]
+                }
+            },
+            "name": "Schedule Trigger",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -200,
+                300
+            ],
+            "id": "schedule_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' ORDER BY random() LIMIT 5;",
+                "options": {}
+            },
+            "name": "Fetch Random Offers",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                0,
+                300
+            ],
+            "id": "fetch_offers",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const offer = $input.item.json;\nconst languages = ['en', 'de', 'es', 'fr']; // Focused markets\n\nreturn languages.map(lang => ({\n  json: {\n    ...offer,\n    target_language: lang\n  }\n}));"
+            },
+            "name": "Language Multiplier",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                200,
+                300
+            ],
+            "id": "multiplier"
+        },
+        {
+            "parameters": {
+                "batchSize": 1,
+                "options": {}
+            },
+            "name": "SplitInBatches",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                400,
+                300
+            ],
+            "id": "split_batches"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://172.17.0.1:11434/v1/chat/completions",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ollama"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "model",
+                            "value": "qwen2.5:1.5b"
+                        },
+                        {
+                            "name": "messages",
+                            "value": "={{ [{\"role\": \"user\", \"content\": \"You are an expert editor for 'Triprt', a premium travel intelligence platform. Write a high-converting guide about \" + $json.primary_keyword + \". Target Country: \" + $json.target_country + \". Language: \" + $json.target_language + \".\\n\\nSTRUCTURE:\\n1. Engaging Intro (The 'Why')\\n2. Value Analysis (Costs/Pros/Cons)\\n3. The 'Architect's Verdict' (Recommendation)\\n4. Insider Tips (Scams/Hacks)\\n5. Call to Action\\n\\nREQUIREMENTS:\\n- Use premium, authoritative tone.\\n- No fluff.\\n- Integrate this link naturally in the verdict section: \" + $json.affiliate_link + \"\\n\\nWrite in Markdown.\"}] }}"
+                        },
+                        {
+                            "name": "temperature",
+                            "value": "0.7"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "name": "Qwen 1.5B Writer",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                600,
+                300
+            ],
+            "id": "qwen_writer"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://157.180.81.63:3000/api/publish",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Publish-Secret",
+                            "value": "triprt-pseo-2024"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "filename",
+                            "value": "={{ $node['SplitInBatches'].json.slug || $node['SplitInBatches'].json.primary_keyword.toLowerCase().replace(/ /g, '-') + '-' + $node['SplitInBatches'].json.target_language }}"
+                        },
+                        {
+                            "name": "content",
+                            "value": "={{ $json.choices[0].message.content }}"
+                        },
+                        {
+                            "name": "subdirectory",
+                            "value": "={{ $node['SplitInBatches'].json.subdirectory }}"
+                        },
+                        {
+                            "name": "language",
+                            "value": "={{ $node['SplitInBatches'].json.target_language }}"
+                        },
+                        {
+                            "name": "affiliate_link",
+                            "value": "={{ $node['SplitInBatches'].json.affiliate_link }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Publish to Triprt",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                900,
+                300
+            ],
+            "id": "publish_triprt"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "UPDATE offers SET status = 'published' WHERE id = '{{ $node[\"SplitInBatches\"].json.id }}';",
+                "options": {}
+            },
+            "name": "Mark Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                1100,
+                300
+            ],
+            "id": "mark_db"
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Restore Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Schedule Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Random Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Random Offers": {
+            "main": [
+                [
+                    {
+                        "node": "Language Multiplier",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Language Multiplier": {
+            "main": [
+                [
+                    {
+                        "node": "SplitInBatches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "SplitInBatches": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Qwen 1.5B Writer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Qwen 1.5B Writer": {
+            "main": [
+                [
+                    {
+                        "node": "Publish to Triprt",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Publish to Triprt": {
+            "main": [
+                [
+                    {
+                        "node": "Mark Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark Published": {
+            "main": [
+                [
+                    {
+                        "node": "SplitInBatches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

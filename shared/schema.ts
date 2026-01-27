@@ -52,6 +52,34 @@ export const licenseKeys = pgTable("license_keys", {
   activatedAt: timestamp("activated_at"),
 });
 
+// pSEO: Affiliate Offers Table ("The Ammo Box")
+// Empire Build - Full Schema
+export const offers = pgTable("offers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+
+  // Core Identity
+  partner_name: text("partner_name").notNull(),
+  affiliate_link: text("affiliate_link").notNull(),
+
+  // Targeting
+  primary_keyword: text("primary_keyword").notNull(),
+  target_country: text("target_country").notNull().default("Global"),
+
+  // Content Structure
+  subdirectory: text("subdirectory").notNull().default("guides"),
+  language_code: text("language_code").notNull().default("en"),
+  slug: text("slug"),
+
+  // Legacy fields (for n8n compatibility)
+  courier_name: text("courier_name"),
+  city: text("city"),
+  target_keyword: text("target_keyword"),
+
+  // Status
+  status: text("status").notNull().default("pending"), // pending, published
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relations
 export const trackingRecordsRelations = relations(trackingRecords, ({ }) => ({}));
 export const trackingHistoryRelations = relations(trackingHistory, ({ }) => ({}));

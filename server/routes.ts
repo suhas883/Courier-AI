@@ -438,9 +438,28 @@ export async function registerRoutes(
         console.error(`[Publish Debug] Failed to log request:`, e);
       }
 
-      const { filename, content, html, language, subdirectory, api_secret } = req.body;
-      // Accept either 'content' or 'html' field (n8n uses 'html')
-      const pageContent = content || html;
+      const { filename, content, html, language, subdirectory, affiliate_link, api_secret } = req.body;
+      const pageContentRaw = content || html || "";
+
+      // GOD MODE CLEANING: Removes markdown backticks, "html" words, and any text before the first <
+      let cleanedContent = pageContentRaw
+        .replace(/```[a-z]*\n?/gi, "")
+        .replace(/```/g, "")
+        .replace(/<!DOCTYPE html>/gi, "")
+        .replace(/<html>/gi, "")
+        .replace(/<\/html>/gi, "")
+        .replace(/<head>[\s\S]*?<\/head>/gi, "")
+        .replace(/<body>/gi, "")
+        .replace(/<\/body>/gi, "");
+
+      // Find the first occurrence of < and strip everything before it (removes "html" artifact)
+      const firstTagIndex = cleanedContent.indexOf("<");
+      if (firstTagIndex > 0) {
+        cleanedContent = cleanedContent.substring(firstTagIndex);
+      }
+
+      const pageContent = cleanedContent.trim();
+      const activeAffiliateLink = affiliate_link || "https://livetrackings.com";
       const headerSecret = req.headers['x-publish-secret'] as string;
       const providedSecret = api_secret || headerSecret;
 
@@ -561,47 +580,108 @@ export async function registerRoutes(
     </script>
 
     <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #1d4ed8;
+        --text: #0f172a;
+        --light: #64748b;
+        --bg: #f8fafc;
+        --card: #ffffff;
+      }
+      
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.7; color: #1a1a2e; background: #f8fafc; }
-      .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+      body { 
+        font-family: 'Inter', -apple-system, sans-serif; 
+        line-height: 1.8; 
+        color: var(--text); 
+        background: var(--bg); 
+      }
       
-      /* Breadcrumbs */
-      .breadcrumb { font-size: 0.9em; color: #64748b; margin-bottom: 20px; }
-      .breadcrumb a { color: #3b82f6; text-decoration: none; }
-      .breadcrumb a:hover { text-decoration: underline; }
-      .breadcrumb span { margin: 0 8px; }
+      h1, h2, h3, h4 { 
+        font-family: 'Outfit', sans-serif; 
+        color: var(--text); 
+        margin: 1.6em 0 0.8em; 
+        line-height: 1.3;
+      }
       
-      /* Typography */
-      h1, h2, h3 { color: #0f172a; margin: 1.5em 0 0.5em; }
-      h1 { font-size: 2.2rem; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; }
-      p { margin: 1em 0; color: #334155; }
-      ul, ol { margin: 1em 0 1em 2em; }
-      li { margin: 0.5em 0; }
-      a { color: #3b82f6; }
+      .container { max-width: 850px; margin: 0 auto; padding: 60px 24px; }
       
-      /* Tables */
-      table { width: 100%; border-collapse: collapse; margin: 1.5em 0; }
-      th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
-      th { background: #3b82f6; color: white; }
-      tr:nth-child(even) { background: #f1f5f9; }
+      .breadcrumb { font-size: 0.9em; color: var(--light); margin-bottom: 30px; display: flex; align-items: center; flex-wrap: wrap; }
+      .breadcrumb a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
+      .breadcrumb a:hover { color: var(--secondary); text-decoration: underline; }
+      .breadcrumb span { margin: 0 10px; opacity: 0.5; }
       
-      /* Callouts */
-      blockquote { border-left: 4px solid #3b82f6; padding-left: 20px; margin: 1.5em 0; background: #eff6ff; padding: 15px 20px; border-radius: 0 8px 8px 0; }
-      .pro-tip { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 15px 20px; margin: 1.5em 0; border-radius: 0 8px 8px 0; }
-      .pro-tip strong { color: #92400e; }
+      h1 { font-size: 2.8rem; font-weight: 700; margin-top: 0; margin-bottom: 20px; letter-spacing: -0.02em; }
+      h2 { font-size: 2rem; font-weight: 600; border-left: 5px solid var(--primary); padding-left: 15px; }
+      h3 { font-size: 1.5rem; font-weight: 600; }
+      p { margin: 1.2em 0; color: #334155; font-size: 1.1rem; }
       
-      /* CTA */
-      .cta-box { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 30px; border-radius: 12px; text-align: center; margin: 2em 0; }
-      .cta-box h3 { color: white; margin-top: 0; }
-      .cta-box a { display: inline-block; background: white; color: #1d4ed8; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 15px; }
-      .cta-box a:hover { background: #f8fafc; }
+      ul, ol { margin: 1.5em 0 1.5em 1.5em; }
+      li { margin: 0.8em 0; padding-left: 5px; }
       
-      /* Author Bio */
-      .author-bio { display: flex; align-items: center; gap: 15px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 30px 0; }
-      .author-bio img { width: 60px; height: 60px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; }
-      .author-bio .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.5em; }
-      .author-bio h4 { margin: 0 0 5px; color: #0f172a; }
-      .author-bio p { margin: 0; font-size: 0.9em; color: #64748b; }
+      .cta-box { 
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
+        color: white; 
+        padding: 40px; 
+        border-radius: 20px; 
+        text-align: center; 
+        margin: 3em 0; 
+        box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.2);
+      }
+      .cta-box h3 { color: white; margin-top: 0; font-size: 1.8rem; }
+      .cta-box p { color: rgba(255, 255, 255, 0.9); font-size: 1rem; margin-bottom: 25px; }
+      .cta-box a { 
+        display: inline-block; 
+        background: white; 
+        color: var(--primary); 
+        padding: 18px 45px; 
+        border-radius: 50px; 
+        text-decoration: none; 
+        font-weight: 700; 
+        font-size: 1.2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+      }
+      .cta-box a:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+      
+      .author-bio { 
+        display: flex; 
+        align-items: center; 
+        gap: 20px; 
+        background: #fff; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 16px; 
+        padding: 24px; 
+        margin: 40px 0; 
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .author-bio .avatar { 
+        width: 70px; 
+        height: 70px; 
+        flex-shrink: 0;
+        border-radius: 50%; 
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        color: white; 
+        font-weight: bold; 
+        font-size: 1.8em; 
+      }
+      .author-bio h4 { margin: 0 0 4px; font-size: 1.2rem; }
+      .author-bio p { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--light); }
+      
+      .disclosure { margin-top: 50px; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 0.85rem; color: var(--light); text-align: center; }
+      
+      .back-home { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 30px; text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+
+      @media (max-width: 768px) {
+        .container { padding: 40px 20px; }
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.7rem; }
+        .cta-box { padding: 30px 20px; }
+        .cta-box a { display: block; width: 100%; padding: 16px 20px; }
+      }
       
       /* Footer elements */
       .disclosure { background: #f1f5f9; padding: 15px; margin-top: 40px; border-radius: 8px; font-size: 0.85em; color: #64748b; }
@@ -634,7 +714,16 @@ export async function registerRoutes(
         </div>
 
         <!-- Main Content -->
-        ${pageContent}
+        <article class="main-article">
+            ${pageContent}
+        </article>
+
+        <!-- Dynamic CTA Box -->
+        <div class="cta-box">
+            <h3>Ready to secure your experience?</h3>
+            <p>Verified solutions for your logistics and travel needs. Get the best rates today.</p>
+            <a href="${activeAffiliateLink}" target="_blank" rel="nofollow sponsored">Check Availability & Prices ➜</a>
+        </div>
         
         <!-- Author Bio -->
         <div class="author-bio">
@@ -660,11 +749,45 @@ export async function registerRoutes(
 
       console.log(`[pSEO] Saved: /${safeLanguage}/${safeSubdirectory}/${safeFilename}.html`);
 
+      // Update sitemap.xml
+      const sitemapPath = path.join(clientPublicDir, 'sitemap.xml');
+      const today = new Date().toISOString().split('T')[0];
+      const newUrl = `    <url>
+        <loc>${canonicalUrl}</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>`;
+
+      let sitemapContent = '';
+      if (fs.existsSync(sitemapPath)) {
+        sitemapContent = fs.readFileSync(sitemapPath, 'utf-8');
+        if (!sitemapContent.includes(canonicalUrl)) {
+          // Insert before </urlset>
+          sitemapContent = sitemapContent.replace('</urlset>', `${newUrl}\n</urlset>`);
+          fs.writeFileSync(sitemapPath, sitemapContent);
+          console.log(`[pSEO] Updated sitemap.xml with ${canonicalUrl}`);
+        }
+      } else {
+        // Create new sitemap
+        sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://livetrackings.com/</loc>
+        <lastmod>${today}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+${newUrl}
+</urlset>`;
+        fs.writeFileSync(sitemapPath, sitemapContent);
+        console.log(`[pSEO] Created new sitemap.xml with ${canonicalUrl}`);
+      }
+
       return res.json({
         success: true,
         url: `/${safeLanguage}/${safeSubdirectory}/${safeFilename}.html`
       });
-      // DEMO: Serve a static sitemap or dynamic one from DB - REMOVED from here
     } catch (error) {
       console.error("Save page error:", error);
       return res.status(500).json({ error: "Failed to save page" });
@@ -672,42 +795,26 @@ export async function registerRoutes(
   });
 
   // DEMO: Serve a static sitemap or dynamic one from DB
-  app.get("/sitemap.xml", async (_req, res) => {
-    try {
-      const publishedOffers = await db.select().from(offers).where(eq(offers.status, "published"));
-
-      const baseUrl = "https://livetrackings.com";
-      let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+  // Serve sitemap.xml directly from file system
+  app.get("/sitemap.xml", (_req, res) => {
+    const sitemapPath = path.join(process.cwd(), "client", "public", "sitemap.xml");
+    if (fs.existsSync(sitemapPath)) {
+      res.header("Content-Type", "application/xml");
+      res.sendFile(sitemapPath);
+    } else {
+      // Return a basic sitemap if file doesn't exist yet
+      const today = new Date().toISOString().split('T')[0];
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>${baseUrl}/</loc>
+    <loc>https://livetrackings.com/</loc>
+    <lastmod>${today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>`;
-
-      publishedOffers.forEach((offer) => {
-        // Reconstruct the filename logic from n8n
-        const slugBase = offer.slug || offer.partner_name.toLowerCase().replace(/ /g, '-');
-        const filename = `${slugBase}-${offer.language_code}`;
-        const url = `${baseUrl}/guides/${offer.language_code}/${offer.subdirectory}/${filename}/`;
-
-        sitemap += `
-  <url>
-    <loc>${url}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`;
-      });
-
-      sitemap += `
+  </url>
 </urlset>`;
-
       res.header("Content-Type", "application/xml");
       res.send(sitemap);
-    } catch (error) {
-      console.error("Sitemap generation error:", error);
-      res.status(500).send("Error generating sitemap");
     }
   });
 

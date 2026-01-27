@@ -1,0 +1,58 @@
+{
+    "name": "Debug Replit API",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "manual_trigger"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/save-page",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"filename\": \"debug-test-n8n.html\",\n  \"language\": \"en\",\n  \"subdirectory\": \"claims\",\n  \"html\": \"<h1>Debug Success</h1><p>N8n successfully connected to Replit.</p>\",\n  \"affiliate_link\": \"https://example.com\",\n  \"api_secret\": \"livetrackings-pseo-2024\"\n}",
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "name": "Test Publish",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                250,
+                0
+            ],
+            "id": "test_publish"
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Test Publish",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

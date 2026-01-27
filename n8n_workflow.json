@@ -1,0 +1,186 @@
+{
+    "name": "pSEO Content Factory",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "minutes": 0,
+                            "seconds": 0
+                        }
+                    ]
+                }
+            },
+            "name": "Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' LIMIT 1;"
+            },
+            "name": "Get Pending Offer",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_POSTGRES_CREDENTIALS_ID",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const langs = [\n  {c:'en',n:'English'},\n  {c:'fr',n:'French'},\n  {c:'de',n:'German'},\n  {c:'hi',n:'Hindi'},\n  {c:'es',n:'Spanish'}\n];\n\nconst offer = $input.item.json;\n\nreturn langs.map(l => ({\n  json: {\n    ...offer,\n    lang_name: l.n,\n    lang_code: l.c\n  }\n}));"
+            },
+            "name": "Split Languages",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.target_keyword }}",
+                "options": {
+                    "systemMessage": "=You are a local expert in {{ $json.country }} speaking {{ $json.lang_name }}. \n\nTASK:\nWrite a helpful, high-quality blog post about \"{{ $json.target_keyword }}\".\n\nSTRATEGY (Trust & Convert):\n1. EMPATHY: Start by acknowledging the user's pain/problem. Don't sell yet. Be a helpful friend.\n2. ADVICE: Give 2-3 genuine, free tips to solve the problem (e.g. \"Check the airline's policy first\").\n3. SOLUTION: Pivot to the solution as the \"industry standard\" or \"best choice\".\n4. OFFER: Introduce {{ $json.partner_name }} using this link: {{ $json.affiliate_link }}\n5. CTA: End with a clear reason to click now.\n\nFORMAT:\n- Use clean HTML (<h2>, <p>, <ul>).\n- NO <html> or <body> tags, just the content.\n- Keep it under 1000 words.\n- Tone: Authoritative but empathetic."
+                }
+            },
+            "name": "Gemini Generator",
+            "type": "n8n-nodes-base.googleGeminiChat",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ],
+            "credentials": {
+                "googleGeminiApi": {
+                    "id": "YOUR_GEMINI_CREDENTIALS_ID",
+                    "name": "Google Gemini Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/save-page",
+                "sendBody": true,
+                "contentType": "json",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "filename",
+                            "value": "={{ $json.target_keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-') }}"
+                        },
+                        {
+                            "name": "content",
+                            "value": "={{ $output.text }}"
+                        },
+                        {
+                            "name": "language",
+                            "value": "={{ $json.lang_code }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Send to Receiver",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                1050,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "=UPDATE offers SET status = 'published' WHERE id = '{{ $json.id }}';"
+            },
+            "name": "Mark Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.1,
+            "position": [
+                1250,
+                300
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_POSTGRES_CREDENTIALS_ID",
+                    "name": "Neon Database"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Get Pending Offer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Pending Offer": {
+            "main": [
+                [
+                    {
+                        "node": "Split Languages",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Split Languages": {
+            "main": [
+                [
+                    {
+                        "node": "Gemini Generator",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Gemini Generator": {
+            "main": [
+                [
+                    {
+                        "node": "Send to Receiver",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send to Receiver": {
+            "main": [
+                [
+                    {
+                        "node": "Mark Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

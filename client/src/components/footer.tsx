@@ -36,13 +36,18 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>Help Center</li>
               <li>API Documentation</li>
-              <li>Contact Us</li>
-              <li>Privacy Policy</li>
+              <li><a href="/contact" className="hover:underline">Contact Us</a></li>
+              <li><a href="/privacy" className="hover:underline">Privacy Policy</a></li>
+              <li><a href="/terms" className="hover:underline">Terms of Service</a></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
+          <p className="mb-4 text-xs max-w-2xl mx-auto italic opacity-70">
+            **Affiliate Disclosure**: We may earn a commission when you click through links on our site.
+            This supports our free tracking tool at no extra cost to you.
+          </p>
           <p>&copy; {new Date().getFullYear()} LiveTrackings. All rights reserved.</p>
         </div>
       </div>

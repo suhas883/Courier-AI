@@ -1,0 +1,13 @@
+{
+    "workflowData": {
+        "id": "WiSSG67QrVOWzGQI",
+        "name": "LiveTrackings - V24 MULTILINGUAL (FR, ES, DE, IT, NL)"
+    },
+    "runData": {
+        "destinationNode": "restore_db",
+        "triggerToStartFrom": {
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger"
+        }
+    }
+}

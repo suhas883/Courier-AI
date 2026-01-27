@@ -1,0 +1,15 @@
+[
+    {
+        "id": "1",
+        "name": "Neon Database",
+        "type": "postgres",
+        "data": {
+            "host": "ep-super-fog-aetldu76-pooler.c-2.us-east-2.aws.neon.tech",
+            "database": "neondb",
+            "user": "neondb_owner",
+            "password": "npg_7rBYLqI6sfJj",
+            "port": 5432,
+            "ssl": "require"
+        }
+    }
+]

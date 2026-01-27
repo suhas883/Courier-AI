@@ -89,14 +89,15 @@
                 },
                 "options": {}
             },
-            "name": "Fetch Image",
+            "name": "Fetch Image (Disabled)",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.1,
             "position": [
                 380,
-                300
+                450
             ],
-            "id": "fetch_image"
+            "id": "fetch_image",
+            "disabled": true
         },
         {
             "parameters": {
@@ -186,7 +187,7 @@
                 },
                 "sendBody": true,
                 "specifyBody": "json",
-                "jsonBody": "={\n  \"filename\": \"{{ $node['Fetch Pending Offers'].json.partner_name.toLowerCase().replace(/ /g, '-') }}\",\n  \"language\": \"{{ $node['Fetch Pending Offers'].json.language_code }}\",\n  \"subdirectory\": \"{{ $node['Fetch Pending Offers'].json.subdirectory }}\",\n  \"html\": {{ JSON.stringify('<img src=\"' + $node['Fetch Image'].json.photos[0].src.landscape + '\" alt=\"' + $node['Fetch Pending Offers'].json.primary_keyword + '\" style=\"width:100%; border-radius:8px; margin-bottom:30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);\" />' + $json.choices[0].message.content + '<div style=\"margin-top:50px; margin-bottom:30px; text-align:center; padding:40px; background:#eff6ff; border-radius:16px; border:1px solid #dbeafe;\"><h2 style=\"margin-top:0; margin-bottom:25px; color:#1e40af; font-size:2rem;\">Ready to plan your trip?</h2><a href=\"' + $node['Fetch Pending Offers'].json.affiliate_link + '\" target=\"_blank\" rel=\"nofollow sponsored\" style=\"display:inline-block; font-size:22px; padding:20px 45px; background:#2563eb; color:white; text-decoration:none; border-radius:50px; font-weight:800; box-shadow:0 10px 15px -3px rgba(37,99,235,0.4);\">Check Prices & Availability ➜</a><p style=\"margin-top:20px; color:#64748b; font-size:0.95rem; margin-bottom:0;\">Best price guaranteed • Verified Secure</p></div>') }}\n}",
+                "jsonBody": "={\n  \"filename\": \"{{ $node['Fetch Pending Offers'].json.partner_name.toLowerCase().replace(/ /g, '-') }}\",\n  \"language\": \"{{ $node['Fetch Pending Offers'].json.language_code }}\",\n  \"subdirectory\": \"{{ $node['Fetch Pending Offers'].json.subdirectory }}\",\n  \"html\": {{ JSON.stringify('<div style=\"width:100%; height:300px; background:#e2e8f0; border-radius:8px; margin-bottom:30px; display:flex; align-items:center; justify-content:center; color:#64748b;\">Image Placeholder</div>' + $json.choices[0].message.content + '<div style=\"margin-top:50px; margin-bottom:30px; text-align:center; padding:40px; background:#eff6ff; border-radius:16px; border:1px solid #dbeafe;\"><h2 style=\"margin-top:0; margin-bottom:25px; color:#1e40af; font-size:2rem;\">Ready to plan your trip?</h2><a href=\"' + $node['Fetch Pending Offers'].json.affiliate_link + '\" target=\"_blank\" rel=\"nofollow sponsored\" style=\"display:inline-block; font-size:22px; padding:20px 45px; background:#2563eb; color:white; text-decoration:none; border-radius:50px; font-weight:800; box-shadow:0 10px 15px -3px rgba(37,99,235,0.4);\">Check Prices & Availability ➜</a><p style=\"margin-top:20px; color:#64748b; font-size:0.95rem; margin-bottom:0;\">Best price guaranteed • Verified Secure</p></div>') }}\n}",
                 "options": {
                     "timeout": 30000
                 }
@@ -265,22 +266,16 @@
             "main": [
                 [
                     {
-                        "node": "Fetch Image",
+                        "node": "Qwen AI Writer",
                         "type": "main",
                         "index": 0
                     }
                 ]
             ]
         },
-        "Fetch Image": {
+        "Fetch Image (Disabled)": {
             "main": [
-                [
-                    {
-                        "node": "Qwen AI Writer",
-                        "type": "main",
-                        "index": 0
-                    }
-                ]
+                []
             ]
         },
         "Qwen AI Writer": {

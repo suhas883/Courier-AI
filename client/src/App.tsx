@@ -14,8 +14,8 @@ import SmsModal from './components/SmsModal';
 import AIChat from './components/AIChat';
 import { usePremiumCredit, getFreePremiumRemaining, isPremiumSubscriber } from "@/lib/premiumAccess";
 
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/Privacy';
+import TermsOfService from './pages/Terms';
 import FeaturesPage from './pages/Features';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';

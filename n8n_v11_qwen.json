@@ -1,0 +1,367 @@
+{
+    "name": "LiveTrackings MASTER (V11 - QWEN POWERED)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Click to Seed DB",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "manual_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT 'en',\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT 'pending'\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, subdirectory, target_country, status) VALUES\n('Compensair', 'https://www.compensair.com/?tp_source=605475', 'flight compensation', 'travel', 'Global', 'pending'),\n('Airalo', 'https://airalo.tp.st/ABCdef12', 'esim travel data', 'travel', 'Global', 'pending'),\n('Aviasales', 'https://aviasales.tp.st/GHIjkl34', 'cheap flights', 'travel', 'Global', 'pending'),\n('Ekta', 'https://ekta.tp.st/MNOpqr56', 'travel insurance', 'insurance', 'Global', 'pending'),\n('Viator', 'https://viator.tp.st/STUvwx78', 'tours and activities', 'travel', 'Global', 'pending'),\n('GetYourGuide', 'https://getyourguide.tp.st/YZAabc90', 'city guides', 'travel', 'Global', 'pending'),\n('Klook', 'https://klook.tp.st/DEFghi12', 'attractions tickets', 'travel', 'Asia', 'pending'),\n('Trip.com', 'https://trip.tp.st/JKLmno34', 'hotel booking', 'travel', 'Global', 'pending'),\n('Kiwi.com', 'https://kiwi.tp.st/PQRstu56', 'flight deals', 'travel', 'Global', 'pending'),\n('Drimsim', 'https://drimsim.tp.st/VWXyz78', 'universal sim card', 'travel', 'Global', 'pending'),\n('Discover Cars', 'https://discovercars.tp.st/ABCdef90', 'car rental', 'travel', 'Global', 'pending'),\n('Economybookings', 'https://economybookings.tp.st/GHIjkl12', 'cheap car hire', 'travel', 'Global', 'pending'),\n('QEEQ', 'https://qeeq.tp.st/MNOpqr34', 'car rental comparison', 'travel', 'Global', 'pending'),\n('Tiqets', 'https://tiqets.tp.st/STUvwx56', 'museum tickets', 'travel', 'Europe', 'pending'),\n('HolidayTaxis', 'https://holidaytaxis.tp.st/YZAabc78', 'airport transfers', 'travel', 'Global', 'pending'),\n('WeGoTrip', 'https://wegotrip.tp.st/DEFghi90', 'audio guides', 'travel', 'Global', 'pending'),\n('Priority Pass', 'https://prioritypass.tp.st/JKLmno12', 'airport lounge access', 'travel', 'Global', 'pending'),\n('BikesBooking', 'https://bikesbooking.tp.st/PQRstu34', 'bike rental', 'travel', 'Global', 'pending');",
+                "options": {}
+            },
+            "name": "Restore Database",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                0
+            ],
+            "id": "restore_db",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hoursInterval": 1
+                        }
+                    ]
+                }
+            },
+            "name": "Hourly Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                0,
+                300
+            ],
+            "id": "schedule_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' LIMIT 3;",
+                "options": {}
+            },
+            "name": "Fetch Pending Offers",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                300
+            ],
+            "id": "fetch_offers",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const offer = $input.item.json;\nconst languages = ['en'];\n\nreturn languages.map(lang => ({\n  json: {\n    ...offer,\n    target_language: lang\n  }\n}));"
+            },
+            "name": "Language Multiplier",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                500,
+                300
+            ],
+            "id": "multiplier"
+        },
+        {
+            "parameters": {
+                "batchSize": 1,
+                "options": {}
+            },
+            "name": "SplitInBatches",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                750,
+                300
+            ],
+            "id": "split_batches"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://valuable-working-seth-deeper.trycloudflare.com/v1/chat/completions",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer triprt-master-key34"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"qwen\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"You are a world-class travel journalist and SEO expert. Write a comprehensive 1500-word guide about {{ $json.primary_keyword }} for travelers. Target country: {{ $json.target_country }}. Write the entire guide in language code: {{ $json.target_language }}.\\n\\nIMPORTANT REQUIREMENTS:\\n1. Start with an engaging introduction about why this topic matters to travelers\\n2. Include at least 5 detailed sections with H2 headings (use ## format)\\n3. Add practical tips, costs, and insider advice\\n4. Include a section about avoiding scams\\n5. End with a clear call-to-action\\n\\nCOMPLIANCE:\\n- Do NOT invent specific discount percentages or fake price guarantees.\\n- Focus on actual features and benefits.\\n\\nNaturally integrate this affiliate link ONCE in the conclusion: {{ $json.affiliate_link }}?utm_source=livetrackings&utm_medium=guide&utm_campaign={{ $json.partner_name }}\\n\\nMake it sound authentic, helpful, and trustworthy.\"\n    }\n  ],\n  \"max_tokens\": 4000,\n  \"temperature\": 0.7\n}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "name": "Qwen AI Writer",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1000,
+                300
+            ],
+            "id": "qwen_ai",
+            "onError": "continueRegularOutput",
+            "retryOnFail": true,
+            "maxTries": 3,
+            "waitBetweenTries": 3000
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "quality_check",
+                            "leftValue": "={{ $json.choices ? $json.choices[0].message.content.length : 0 }}",
+                            "rightValue": 500,
+                            "operator": {
+                                "type": "number",
+                                "operation": "gt"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "name": "Quality Check",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                1250,
+                300
+            ],
+            "id": "quality_gate"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/publish",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Publish-Secret",
+                            "value": "livetrackings-pseo-2024"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"filename\": \"{{ $node['SplitInBatches'].json.slug || $node['SplitInBatches'].json.partner_name.toLowerCase().replace(/ /g, '-') }}-{{ $node['SplitInBatches'].json.target_language }}\",\n  \"language\": \"{{ $node['SplitInBatches'].json.target_language }}\",\n  \"subdirectory\": \"{{ $node['SplitInBatches'].json.subdirectory }}\",\n  \"content\": {{ JSON.stringify($json.choices[0].message.content) }},\n  \"affiliate_link\": \"{{ $node['SplitInBatches'].json.affiliate_link }}\"\n}",
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "name": "Publish to Replit",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1500,
+                200
+            ],
+            "id": "publish_replit",
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "UPDATE offers SET status = 'published', language_code = '{{ $node[\"SplitInBatches\"].json.target_language }}' WHERE id = '{{ $node[\"SplitInBatches\"].json.id }}';",
+                "options": {}
+            },
+            "name": "Mark as Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                1750,
+                200
+            ],
+            "id": "mark_published",
+            "credentials": {
+                "postgres": {
+                    "id": "4833rxpFPAptNJEn",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "amount": 10,
+                "unit": "seconds"
+            },
+            "name": "Rate Limit Delay",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                2000,
+                300
+            ],
+            "id": "rate_limit",
+            "webhookId": "delay-webhook-v11"
+        }
+    ],
+    "connections": {
+        "Click to Seed DB": {
+            "main": [
+                [
+                    {
+                        "node": "Restore Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Hourly Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Pending Offers": {
+            "main": [
+                [
+                    {
+                        "node": "Language Multiplier",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Language Multiplier": {
+            "main": [
+                [
+                    {
+                        "node": "SplitInBatches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "SplitInBatches": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "Qwen AI Writer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Qwen AI Writer": {
+            "main": [
+                [
+                    {
+                        "node": "Quality Check",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Quality Check": {
+            "main": [
+                [
+                    {
+                        "node": "Publish to Replit",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Publish to Replit": {
+            "main": [
+                [
+                    {
+                        "node": "Mark as Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark as Published": {
+            "main": [
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Rate Limit Delay": {
+            "main": [
+                [
+                    {
+                        "node": "SplitInBatches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    }
+}

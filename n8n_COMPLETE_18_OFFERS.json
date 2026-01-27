@@ -1,0 +1,311 @@
+{
+    "name": "LiveTrackings - V24 MULTILINGUAL (FR, ES, DE, IT, NL)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Click to Seed DB",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                0,
+                0
+            ],
+            "id": "manual_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "DROP TABLE IF EXISTS offers;\n\nCREATE TABLE offers (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    partner_name TEXT NOT NULL,\n    affiliate_link TEXT NOT NULL,\n    primary_keyword TEXT NOT NULL,\n    target_country TEXT NOT NULL,\n    subdirectory TEXT NOT NULL,\n    language_code TEXT NOT NULL DEFAULT 'en',\n    slug TEXT,\n    status TEXT NOT NULL DEFAULT 'pending'\n);\n\nINSERT INTO offers (partner_name, affiliate_link, primary_keyword, target_country, subdirectory, status, language_code) VALUES\n-- English (EN)\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'flight delay compensation', 'Global', 'claims', 'pending', 'en'),\n('AirHelp', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fairhelp.com&campaign_id=86', 'airline refund help', 'Global', 'claims', 'pending', 'en'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'esim for international travel', 'Global', 'claims', 'pending', 'en'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'museum tickets online', 'Global', 'claims', 'pending', 'en'),\n\n-- French (FR)\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'indemnisation vol retardé', 'France', 'claims', 'pending', 'fr'),\n('AirHelp', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fairhelp.com&campaign_id=86', 'réclamation vol annulé', 'France', 'claims', 'pending', 'fr'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'esim voyage international', 'Global', 'claims', 'pending', 'fr'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'billets musées et attractions', 'France', 'claims', 'pending', 'fr'),\n\n-- Spanish (ES)\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'compensación vuelo retrasado', 'Spain', 'claims', 'pending', 'es'),\n('AirHelp', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fairhelp.com&campaign_id=86', 'reclamación cancelación vuelo', 'Spain', 'claims', 'pending', 'es'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'esim para viajar', 'Global', 'claims', 'pending', 'es'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'entradas museos y atracciones', 'Spain', 'claims', 'pending', 'es'),\n\n-- German (DE)\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'flugverspätung entschädigung', 'Germany', 'claims', 'pending', 'de'),\n('AirHelp', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fairhelp.com&campaign_id=86', 'flugannullierung rechte', 'Germany', 'claims', 'pending', 'de'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'esim für reisen', 'Global', 'claims', 'pending', 'de'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'museen und sehenswürdigkeiten tickets', 'Germany', 'claims', 'pending', 'de'),\n\n-- Italian (IT)\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'risarcimento ritardo volo', 'Italy', 'claims', 'pending', 'it'),\n('AirHelp', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fairhelp.com&campaign_id=86', 'rimborso volo cancellato', 'Italy', 'claims', 'pending', 'it'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'esim per viaggiare', 'Global', 'claims', 'pending', 'it'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'biglietti musei e attrazioni', 'Italy', 'claims', 'pending', 'it'),\n\n-- Dutch (NL)\n('Compensair', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fcompensair.com&campaign_id=86', 'vluchtvertraging vergoeding', 'Netherlands', 'claims', 'pending', 'nl'),\n('AirHelp', 'https://tp.media/r?marker=605475&trs=488170&p=4129&u=https%3A%2F%2Fairhelp.com&campaign_id=86', 'vluchtannulering rechten', 'Netherlands', 'claims', 'pending', 'nl'),\n('Airalo eSIM', 'https://tp.media/r?marker=605475&trs=488170&p=8310&u=https%3A%2F%2Fairalo.com&campaign_id=541', 'esim voor reizen', 'Global', 'claims', 'pending', 'nl'),\n('Tiqets', 'https://tp.media/r?marker=605475&trs=488170&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89', 'tickets musea en attracties', 'Netherlands', 'claims', 'pending', 'nl');",
+                "options": {}
+            },
+            "name": "Restore Database",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                0
+            ],
+            "id": "restore_db",
+            "credentials": {
+                "postgres": {
+                    "id": "1",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "minutes",
+                            "minutesInterval": 2
+                        }
+                    ]
+                }
+            },
+            "name": "2-Minute Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                0,
+                300
+            ],
+            "id": "schedule_trigger"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT * FROM offers WHERE status = 'pending' LIMIT 1;",
+                "options": {}
+            },
+            "name": "Fetch Pending Offers",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                250,
+                300
+            ],
+            "id": "fetch_offers",
+            "credentials": {
+                "postgres": {
+                    "id": "1",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://openrouter.ai/api/v1/chat/completions",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer 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"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"model\": \"openai/gpt-4o-mini\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a native {{ $node['Fetch Pending Offers'].json.language_code }} SEO Content Specialist. Output raw HTML only. NO backticks. NO ``` blocks. NO preamble. Start with the title or first paragraph. Your output must be in {{ $node['Fetch Pending Offers'].json.language_code }}.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"WRITE: A premium 800-word SEO guide about {{ $node['Fetch Pending Offers'].json.primary_keyword }} in {{ $node['Fetch Pending Offers'].json.language_code }}. MANDATORY: Link {{ $node['Fetch Pending Offers'].json.affiliate_link }} in the first paragraph. FORMAT: Use <h2> for main sections, <h3> for subsections, <p> for body, <ul> for lists. TONE: High-authority. DO NOT use ``` blocks.\"\n    }\n  ],\n  \"max_tokens\": 2500,\n  \"temperature\": 0.6\n}",
+                "options": {
+                    "timeout": 120000
+                }
+            },
+            "name": "AI Content Writer",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                500,
+                300
+            ],
+            "id": "ai_writer",
+            "onError": "continueRegularOutput",
+            "retryOnFail": true,
+            "maxTries": 3,
+            "waitBetweenTries": 5000
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict"
+                    },
+                    "conditions": [
+                        {
+                            "id": "quality_check",
+                            "leftValue": "={{ $json.choices ? $json.choices[0].message.content.length : 0 }}",
+                            "rightValue": 100,
+                            "operator": {
+                                "type": "number",
+                                "operation": "gt"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "name": "Quality Gate",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2,
+            "position": [
+                750,
+                300
+            ],
+            "id": "quality_gate"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://livetrackings.com/api/publish",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"filename\": \"{{ $node['Fetch Pending Offers'].json.start_case_primary_keyword || $node['Fetch Pending Offers'].json.primary_keyword.toLowerCase().replace(/ /g, '-') }}.html\",\n  \"language\": \"{{ $node['Fetch Pending Offers'].json.language_code }}\",\n  \"subdirectory\": \"{{ $node['Fetch Pending Offers'].json.subdirectory }}\",\n  \"affiliate_link\": \"{{ $node['Fetch Pending Offers'].json.affiliate_link }}\",\n  \"html\": {{ JSON.stringify($json.choices[0].message.content) }},\n  \"api_secret\": \"livetrackings-pseo-2024\"\n}",
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "name": "Publish to Replit",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                1000,
+                200
+            ],
+            "id": "publish_replit",
+            "onError": "continueRegularOutput"
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "UPDATE offers SET status = 'published' WHERE id = '{{ $node['Fetch Pending Offers'].json.id }}';",
+                "options": {}
+            },
+            "name": "Mark as Published",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.5,
+            "position": [
+                1250,
+                200
+            ],
+            "id": "mark_published",
+            "credentials": {
+                "postgres": {
+                    "id": "1",
+                    "name": "Neon Database"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "amount": 10,
+                "unit": "seconds"
+            },
+            "name": "Rate Limit Delay",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1000,
+                400
+            ],
+            "id": "rate_limit",
+            "webhookId": "delay-webhook-v24-multilingual"
+        }
+    ],
+    "connections": {
+        "Click to Seed DB": {
+            "main": [
+                [
+                    {
+                        "node": "Restore Database",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "2-Minute Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Pending Offers": {
+            "main": [
+                [
+                    {
+                        "node": "AI Content Writer",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Content Writer": {
+            "main": [
+                [
+                    {
+                        "node": "Quality Gate",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Quality Gate": {
+            "main": [
+                [
+                    {
+                        "node": "Publish to Replit",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Publish to Replit": {
+            "main": [
+                [
+                    {
+                        "node": "Mark as Published",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Mark as Published": {
+            "main": [
+                [
+                    {
+                        "node": "Rate Limit Delay",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Rate Limit Delay": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Pending Offers",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1"
+    }
+}
