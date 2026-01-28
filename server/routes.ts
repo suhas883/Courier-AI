@@ -11,8 +11,14 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// This check makes it work in BOTH development (ESM) and production (CJS)
+const __filename = typeof import.meta.url !== 'undefined'
+  ? fileURLToPath(import.meta.url)
+  : __filename; // In CJS, __filename is globally available
+
+const __dirname = typeof __dirname !== 'undefined'
+  ? __dirname
+  : path.dirname(__filename);
 
 // Detect carrier from tracking number pattern
 function detectCarrierFromNumber(trackingNumber: string): string {
