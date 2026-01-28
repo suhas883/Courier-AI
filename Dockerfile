@@ -43,4 +43,4 @@ ENV NODE_ENV=production
 ENV PORT=5000
 
 # Start the application - Run DB push first
-CMD ["sh", "-c", "npm run db:push && node dist/index.cjs"]
+CMD ["node", "dist/index.cjs"]
